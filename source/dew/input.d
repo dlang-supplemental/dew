@@ -1,4 +1,4 @@
-/// Normalized pointer / touch types shared by nodes and the dispatcher.
+/// Normalized pointer / touch / key types shared by nodes and the dispatcher.
 module dew.input;
 
 enum PointerButton : ubyte
@@ -55,6 +55,27 @@ enum float defaultTouchSlop = 8;
 alias ClickHandler = void delegate() @safe;
 alias PointerHandler = void delegate(PointerEvent ev) @safe;
 
+enum KeyPhase : ubyte
+{
+    Down,
+    Up,
+    Repeat,
+}
+
+/// Minimal keyboard sample for focus traversal and form submit.
+struct KeyEvent
+{
+    /// Logical key: `"Tab"`, `"Enter"`, `"Escape"`, `"ArrowUp"`, …
+    string key;
+    KeyPhase phase = KeyPhase.Down;
+    bool shift;
+    bool ctrl;
+    bool alt;
+    bool meta;
+}
+
+alias KeyHandler = void delegate(KeyEvent ev) @safe;
+
 PointerEvent touchDown(float x, float y, uint id = 1, bool primary = true) @safe @nogc pure nothrow
 {
     PointerEvent e;
@@ -70,8 +91,77 @@ PointerEvent touchDown(float x, float y, uint id = 1, bool primary = true) @safe
     return e;
 }
 
+PointerEvent touchMove(float x, float y, uint id = 1, bool primary = true) @safe @nogc pure nothrow
+{
+    auto e = touchDown(x, y, id, primary);
+    e.phase = PointerPhase.Move;
+    return e;
+}
+
+PointerEvent touchUp(float x, float y, uint id = 1, bool primary = true) @safe @nogc pure nothrow
+{
+    auto e = touchDown(x, y, id, primary);
+    e.phase = PointerPhase.Up;
+    e.pressed = false;
+    return e;
+}
+
+PointerEvent touchCancel(float x, float y, uint id = 1, bool primary = true) @safe @nogc pure nothrow
+{
+    auto e = touchDown(x, y, id, primary);
+    e.phase = PointerPhase.Cancel;
+    e.pressed = false;
+    return e;
+}
+
+PointerEvent mouseDown(float x, float y, PointerButton button = PointerButton.Left) @safe @nogc pure nothrow
+{
+    PointerEvent e;
+    e.x = x;
+    e.y = y;
+    e.kind = PointerKind.Mouse;
+    e.phase = PointerPhase.Down;
+    e.button = button;
+    e.pressed = true;
+    e.id = 0;
+    e.primary = true;
+    return e;
+}
+
+PointerEvent mouseMove(float x, float y, bool pressed = false,
+    PointerButton button = PointerButton.Left) @safe @nogc pure nothrow
+{
+    auto e = mouseDown(x, y, button);
+    e.phase = PointerPhase.Move;
+    e.pressed = pressed;
+    return e;
+}
+
+PointerEvent mouseUp(float x, float y, PointerButton button = PointerButton.Left) @safe @nogc pure nothrow
+{
+    auto e = mouseDown(x, y, button);
+    e.phase = PointerPhase.Up;
+    e.pressed = false;
+    return e;
+}
+
+KeyEvent keyDown(string key, bool shift = false) @safe pure nothrow
+{
+    KeyEvent e;
+    e.key = key;
+    e.phase = KeyPhase.Down;
+    e.shift = shift;
+    return e;
+}
+
 unittest
 {
     auto e = touchDown(10, 20, 3);
     assert(e.kind == PointerKind.Touch && e.id == 3);
+    auto m = touchMove(12, 24, 3);
+    assert(m.phase == PointerPhase.Move && m.id == 3);
+    auto u = touchUp(12, 24, 3);
+    assert(u.phase == PointerPhase.Up && !u.pressed);
+    auto k = keyDown("Tab", true);
+    assert(k.key == "Tab" && k.shift);
 }
