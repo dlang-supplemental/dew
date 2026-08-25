@@ -1,4 +1,4 @@
-name "rmgui"
+name "dew"
 description "Modern retained-mode GUI for D: typed DSL, CTFE markup, flex layout, Vello 2D + wgpu 3D, tgc-friendly"
 authors "amdphreak"
 copyright "Copyright © 2026, dlang-supplemental contributors"
@@ -6,7 +6,7 @@ license "BSL-1.0"
 # Version comes from git tags (vX.Y.Z).
 
 targetType "library"
-targetName "rmgui"
+targetName "dew"
 
 dependency "tgc" version="~>0.1.1"
 
@@ -15,7 +15,7 @@ configuration "library" {
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	versions "RmguiHeadless"
+	versions "DewHeadless"
 }
 
 configuration "unittest" {
@@ -23,7 +23,7 @@ configuration "unittest" {
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	versions "Tgc_default" "RmguiHeadless"
+	versions "Tgc_default" "DewHeadless"
 }
 
 configuration "headless" {
@@ -31,7 +31,7 @@ configuration "headless" {
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	versions "RmguiHeadless"
+	versions "DewHeadless"
 }
 
 # Production / GPU hosts: registry vello-d + bindbc-wgpu (no path pins).

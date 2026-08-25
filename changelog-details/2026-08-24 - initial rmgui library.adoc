@@ -1,8 +1,0 @@
-= 2026-08-24 - initial rmgui library
-
-First public cut of the retained-mode GUI stack described in the modern D GUI plan:
-
-* Canonical pure-D builder AST with method chaining and shared vocabulary for markup.
-* Compile-time brace markup lowering to the same builders; bidirectional nesting supported via `mixin(uiMarkup!…)` inside DSL trees.
-* Format adapters for onboarding designers/devs from Slint/QML/KDL/web/game toolchains.
-* Paint path emits a flat command buffer; software backend for tests; Vello GPU presenter and wgpu 3D viewport for production (`-c gpu`, packages from code.dlang.org).

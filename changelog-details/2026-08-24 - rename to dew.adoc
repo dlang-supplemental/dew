@@ -1,0 +1,7 @@
+= 2026-08-24 - rename to dew
+
+Renamed the engine from `rmgui` to `dew` for discoverability and branding.
+
+* DUB / GitHub: `dew`
+* Slogan: *Dew it!* (Palpatine-flavored; not a Nike “Just Do It” parody)
+* Higher-level app kit starts in sibling package `dui`

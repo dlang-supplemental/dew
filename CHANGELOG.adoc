@@ -1,10 +1,12 @@
 = changelog
 
-== 2026-08-24 - Initial rmgui library
+== 2026-08-24 - Rename to dew + Dew it!
 
-* Typed DSL (`VStack` / `HStack` / `Text` / `Button`), arenas, `Signal!T`, flex layout, display list.
-* CTFE markup + adapters: Slint, QML, KDL, RSX, UXML, JSX, Godot, RON, JSON.
-* Backends: software (CI), Vello 2D via registry `vello-d` (`-c gpu`), wgpu 3D viewport via `bindbc-wgpu`.
-* `tgc` dependency for thread-local GC hosts; gallery example; CI + installers.
+* Package/module rename `rmgui` → `dew`; tagline **Dew it!**
+* Companion app-kit `dui` introduced (depends on `dew`).
 
-Details: link:changelog-details/2026-08-24 - initial rmgui library.adoc[2026-08-24 - initial rmgui library].
+== 2026-08-24 - Initial library (as rmgui)
+
+* Typed DSL, CTFE markup, adapters, software/Vello/wgpu backends, `tgc`, gallery, CI, installers.
+
+Details: link:changelog-details/2026-08-24 - rename to dew.adoc[2026-08-24 - rename to dew].

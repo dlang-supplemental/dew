@@ -6,7 +6,7 @@ module gallery;
 
 import std.stdio;
 import tgc.gcobj;
-import rmgui;
+import dew;
 
 void saveProfile() @safe
 {
@@ -15,7 +15,7 @@ void saveProfile() @safe
 
 void main()
 {
-    writeln("rmgui gallery ", rmguiVersion);
+    writeln("dew gallery ", dewVersion, " — ", dewSlogan);
 
     App app;
     beginUi(app.ui);
@@ -28,7 +28,7 @@ void main()
             Text("Render Backend:"),
             Text("Vello + wgpu3d")
         ),
-        Button("Apply").onClick(&saveProfile)
+        Button("Apply").onClick(() { saveProfile(); })
     ).spacing(8).padding(16);
 
     auto card = mixin(uiMarkup!`

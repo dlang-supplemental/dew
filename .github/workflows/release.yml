@@ -20,19 +20,19 @@ jobs:
         include:
           - os: ubuntu-latest
             triplet: linux-x64
-            artifact: rmgui-gallery
+            artifact: dew-gallery
           - os: ubuntu-24.04-arm
             triplet: linux-arm64
-            artifact: rmgui-gallery
+            artifact: dew-gallery
           - os: windows-latest
             triplet: windows-x64
-            artifact: rmgui-gallery.exe
+            artifact: dew-gallery.exe
           - os: windows-11-arm
             triplet: windows-arm64
-            artifact: rmgui-gallery.exe
+            artifact: dew-gallery.exe
           - os: macos-14
             triplet: macos-arm64
-            artifact: rmgui-gallery
+            artifact: dew-gallery
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -56,12 +56,12 @@ jobs:
           mkdir -p "dist/${{ matrix.triplet }}"
           if [ -f "examples/gallery/${{ matrix.artifact }}" ]; then
             cp "examples/gallery/${{ matrix.artifact }}" "dist/${{ matrix.triplet }}/"
-          elif [ -f "examples/gallery/rmgui-gallery" ]; then
-            cp examples/gallery/rmgui-gallery "dist/${{ matrix.triplet }}/"
-          elif [ -f "examples/gallery/rmgui-gallery.exe" ]; then
-            cp examples/gallery/rmgui-gallery.exe "dist/${{ matrix.triplet }}/"
+          elif [ -f "examples/gallery/dew-gallery" ]; then
+            cp examples/gallery/dew-gallery "dist/${{ matrix.triplet }}/"
+          elif [ -f "examples/gallery/dew-gallery.exe" ]; then
+            cp examples/gallery/dew-gallery.exe "dist/${{ matrix.triplet }}/"
           else
-            find examples/gallery -maxdepth 2 -type f -name 'rmgui-gallery*' -print
+            find examples/gallery -maxdepth 2 -type f -name 'dew-gallery*' -print
             exit 1
           fi
       - name: Windows installer (Inno)
@@ -70,9 +70,9 @@ jobs:
         run: |
           choco install innosetup -y
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\windows\rmgui-gallery.iss
-          if (Test-Path dist\windows-x64\rmgui-gallery-setup.exe) {
-            Copy-Item dist\windows-x64\rmgui-gallery-setup.exe "dist\${{ matrix.triplet }}\"
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\windows\dew-gallery.iss
+          if (Test-Path dist\windows-x64\dew-gallery-setup.exe) {
+            Copy-Item dist\windows-x64\dew-gallery-setup.exe "dist\${{ matrix.triplet }}\"
           }
       - uses: actions/upload-artifact@v4
         with:
@@ -94,10 +94,10 @@ jobs:
           mkdir -p release
           for d in slices/app-*; do
             trip=${d#slices/app-}
-            (cd "$d" && zip -r "../../release/rmgui-gallery-${trip}.zip" .)
+            (cd "$d" && zip -r "../../release/dew-gallery-${trip}.zip" .)
           done
           # Prefer installer from windows-x64 staging if present inside the zip tree
-          find slices -name 'rmgui-gallery-setup.exe' -exec cp {} release/ \;
+          find slices -name 'dew-gallery-setup.exe' -exec cp {} release/ \;
           ls -la release
       - uses: softprops/action-gh-release@v2
         with:

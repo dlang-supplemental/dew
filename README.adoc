@@ -7,20 +7,21 @@ ifdef::env-github[]
 ++++
 <a id="readme-top"></a>
 <div align="center">
-<a href="https://code.dlang.org/packages/rmgui"><img src="https://img.shields.io/dub/v/rmgui.svg?style=for-the-badge" alt="Dub version"></a>
-<a href="https://github.com/dlang-supplemental/rmgui/graphs/contributors"><img src="https://img.shields.io/github/contributors/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Contributors"></a>
-<a href="https://github.com/dlang-supplemental/rmgui/network/members"><img src="https://img.shields.io/github/forks/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Forks"></a>
-<a href="https://github.com/dlang-supplemental/rmgui/stargazers"><img src="https://img.shields.io/github/stars/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Stars"></a>
-<a href="https://github.com/dlang-supplemental/rmgui/issues"><img src="https://img.shields.io/github/issues/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Issues"></a>
-<a href="https://github.com/dlang-supplemental/rmgui/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="License"></a>
+<a href="https://code.dlang.org/packages/dew"><img src="https://img.shields.io/dub/v/dew.svg?style=for-the-badge" alt="Dub version"></a>
+<a href="https://github.com/dlang-supplemental/dew/graphs/contributors"><img src="https://img.shields.io/github/contributors/dlang-supplemental/dew.svg?style=for-the-badge" alt="Contributors"></a>
+<a href="https://github.com/dlang-supplemental/dew/network/members"><img src="https://img.shields.io/github/forks/dlang-supplemental/dew.svg?style=for-the-badge" alt="Forks"></a>
+<a href="https://github.com/dlang-supplemental/dew/stargazers"><img src="https://img.shields.io/github/stars/dlang-supplemental/dew.svg?style=for-the-badge" alt="Stars"></a>
+<a href="https://github.com/dlang-supplemental/dew/issues"><img src="https://img.shields.io/github/issues/dlang-supplemental/dew.svg?style=for-the-badge" alt="Issues"></a>
+<a href="https://github.com/dlang-supplemental/dew/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dlang-supplemental/dew.svg?style=for-the-badge" alt="License"></a>
 <br />
-<h3 align="center">rmgui</h3>
+<h3 align="center">dew</h3>
 <p align="center">
-Modern retained-mode GUI for D — typed DSL + CTFE markup, flex layout, <strong>Vello</strong> 2D GPU and <strong>wgpu</strong> 3D embeds, <code>tgc</code>-friendly.
+<strong>Dew it!</strong> — Modern retained-mode GUI engine for D.<br />
+Typed DSL + CTFE markup, flex layout, Vello 2D GPU and wgpu 3D embeds, <code>tgc</code>-friendly.
 <br />
-<a href="https://github.com/dlang-supplemental/rmgui/issues">Report Bug</a>
+<a href="https://github.com/dlang-supplemental/dew/issues">Report Bug</a>
 &middot;
-<a href="https://github.com/dlang-supplemental/rmgui/issues">Request Feature</a>
+<a href="https://github.com/dlang-supplemental/dew/issues">Request Feature</a>
 &middot;
 <a href="https://dlang-supplemental.github.io/docs/">Explore the docs »</a>
 </p>
@@ -29,48 +30,52 @@ Modern retained-mode GUI for D — typed DSL + CTFE markup, flex layout, <strong
 endif::[]
 
 ifndef::env-github[]
-= rmgui
+= dew
 
-Modern retained-mode GUI for D — typed DSL + CTFE markup, flex layout, *Vello* 2D GPU and *wgpu* 3D embeds, `tgc`-friendly.
+*Dew it!* — Modern retained-mode GUI engine for D.
+
+Typed DSL + CTFE markup, flex layout, Vello 2D GPU and wgpu 3D embeds, `tgc`-friendly.
 
 link:https://dlang-supplemental.github.io/docs/[Explore the docs »]
 endif::[]
 
-Package name on DUB: `rmgui`.
+Package name on DUB: `dew`. App-kit companion: link:https://github.com/dlang-supplemental/dui[`dui`].
 
 == About
 
-`rmgui` is a greenfield retained-mode UI stack for D:
+`dew` is the retained-mode UI *engine*:
 
-* **Pure D typed DSL** (Compose/SwiftUI-style builders) as the canonical AST
-* **CTFE markup** (Slint/QML-inspired) that lowers into the same DSL
-* **Adapters** for Slint, QML, KDL, RSX, UXML, JSX, Godot `.tscn`, RON, JSON
-* **Flex layout** over contiguous POD nodes / arenas
-* **2D GPU:** link:https://code.dlang.org/packages/vello-d[`vello-d`] (registry, not a path pin)
-* **3D embeds:** link:https://code.dlang.org/packages/bindbc-wgpu[`bindbc-wgpu`] (same API family as Vello's wgpu backend)
+* Pure D typed DSL (Compose/SwiftUI-style) as the canonical AST
+* CTFE markup (Slint/QML-inspired) that lowers into the same DSL
+* Adapters for Slint, QML, KDL, RSX, UXML, JSX, Godot `.tscn`, RON, JSON
+* Flex layout over contiguous POD nodes / arenas
+* **2D GPU:** link:https://code.dlang.org/packages/vello-d[`vello-d`] (registry)
+* **3D embeds:** link:https://code.dlang.org/packages/bindbc-wgpu[`bindbc-wgpu`]
 * **`tgc`:** thread-local GC so domain threads do not stop-the-world the UI loop
+
+Higher-level state / app sugar lives in **`dui`** (depends on `dew`).
 
 == Configurations
 
 |===
 | Config | Use
 
-| `library` / `headless` | Software paint + stubs; CI and unit tests (no Rust/MSVC link)
-| `gpu` | Registry deps `vello-d` + `bindbc-wgpu` for real GPU hosts
+| `library` / `headless` | Software paint + stubs; CI (no Rust/MSVC link)
+| `gpu` | Registry `vello-d` + `bindbc-wgpu` for real GPU hosts
 |===
 
 [source,powershell]
 ----
-dub add rmgui
-dub build -c gpu          # apps with a window + Vello
-dub test -c headless      # CI
+dub add dew
+dub build -c gpu
+dub test -c headless
 ----
 
-== Quick start (typed DSL)
+== Quick start
 
 [source,d]
 ----
-import rmgui;
+import dew;
 
 void main()
 {
@@ -80,36 +85,16 @@ void main()
 
     auto root = VStack(
         Text("Hello").fontSize(18).bold(),
-        Button("OK").onClick(() { /* ... */ })
-    ).spacing(8).padding(16);
+        Button("OK").onClick(() {})
+    ).spacing(8);
 
     App app;
     app.ui = b;
     app.setRoot(root);
-    app.backend = new SoftwareBackend(800, 600); // or VelloRenderBackend + attach(hwnd, ...)
+    app.backend = new SoftwareBackend(800, 600);
     app.frame();
 }
 ----
-
-== CTFE markup
-
-[source,d]
-----
-auto card = mixin(uiMarkup!`
-    VStack {
-        spacing: 12;
-        Text { text: "Profile"; bold: true; }
-        Button { text: "Save"; on_click: saveProfile; }
-    }
-`);
-----
-
-== Installers
-
-* Windows: `installer/windows/rmgui-gallery.iss` (Inno Setup) → `dist/rmgui-gallery-setup.exe`
-* Unix: `installer/unix/install.sh` installs the gallery binary under `/usr/local`
-
-CI release workflow builds gallery artifacts and attaches them to GitHub Releases.
 
 == Changelog
 
