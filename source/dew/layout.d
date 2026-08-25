@@ -84,7 +84,13 @@ private void layoutChildren(ref NodeStore store, NodeId parent) @safe
         if (isNaN(main))
         {
             if (ch.kind == NodeKind.Text || ch.kind == NodeKind.Button)
-                main = estimateTextWidth(ch) + ch.padding * 2;
+            {
+                // Main axis: width for HStack, height for VStack.
+                if (axis == Axis.Horizontal)
+                    main = estimateTextWidth(ch) + ch.padding * 2;
+                else
+                    main = ch.fontSize * (ch.bold ? 1.4f : 1.25f) + ch.padding * 2;
+            }
             else if (ch.kind == NodeKind.Spacer)
                 main = 0;
             else
@@ -169,4 +175,30 @@ private float estimateTextWidth(ref Node n) @safe @nogc pure nothrow
 {
     // Approximate monospace-ish advance
     return n.text.length * n.fontSize * 0.55f;
+}
+
+unittest
+{
+    NodeStore store;
+    Node rootN;
+    rootN.kind = NodeKind.VStack;
+    rootN.padding = 10;
+    rootN.spacing = 4;
+    auto root = store.alloc(rootN);
+    Node t;
+    t.kind = NodeKind.Text;
+    t.text = "Hi";
+    t.fontSize = 20;
+    store.appendChild(root, store.alloc(t));
+    Node b;
+    b.kind = NodeKind.Button;
+    b.text = "Go";
+    b.fontSize = 14;
+    auto bid = store.alloc(b);
+    store.appendChild(root, bid);
+
+    layoutTree(store, root, 200, 200);
+    // VStack children must size by text height, not width estimate.
+    assert(store[bid].h > 10 && store[bid].h < 40);
+    assert(store[bid].y > store[root].y);
 }
