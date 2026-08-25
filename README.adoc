@@ -1,0 +1,120 @@
+ifndef::env-github[:icons: font]
+:toc: preamble
+:toclevels: 2
+:sectanchors:
+
+ifdef::env-github[]
+++++
+<a id="readme-top"></a>
+<div align="center">
+<a href="https://code.dlang.org/packages/rmgui"><img src="https://img.shields.io/dub/v/rmgui.svg?style=for-the-badge" alt="Dub version"></a>
+<a href="https://github.com/dlang-supplemental/rmgui/graphs/contributors"><img src="https://img.shields.io/github/contributors/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Contributors"></a>
+<a href="https://github.com/dlang-supplemental/rmgui/network/members"><img src="https://img.shields.io/github/forks/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Forks"></a>
+<a href="https://github.com/dlang-supplemental/rmgui/stargazers"><img src="https://img.shields.io/github/stars/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Stars"></a>
+<a href="https://github.com/dlang-supplemental/rmgui/issues"><img src="https://img.shields.io/github/issues/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="Issues"></a>
+<a href="https://github.com/dlang-supplemental/rmgui/blob/main/LICENSE"><img src="https://img.shields.io/github/license/dlang-supplemental/rmgui.svg?style=for-the-badge" alt="License"></a>
+<br />
+<h3 align="center">rmgui</h3>
+<p align="center">
+Modern retained-mode GUI for D — typed DSL + CTFE markup, flex layout, <strong>Vello</strong> 2D GPU and <strong>wgpu</strong> 3D embeds, <code>tgc</code>-friendly.
+<br />
+<a href="https://github.com/dlang-supplemental/rmgui/issues">Report Bug</a>
+&middot;
+<a href="https://github.com/dlang-supplemental/rmgui/issues">Request Feature</a>
+&middot;
+<a href="https://dlang-supplemental.github.io/docs/">Explore the docs »</a>
+</p>
+</div>
+++++
+endif::[]
+
+ifndef::env-github[]
+= rmgui
+
+Modern retained-mode GUI for D — typed DSL + CTFE markup, flex layout, *Vello* 2D GPU and *wgpu* 3D embeds, `tgc`-friendly.
+
+link:https://dlang-supplemental.github.io/docs/[Explore the docs »]
+endif::[]
+
+Package name on DUB: `rmgui`.
+
+== About
+
+`rmgui` is a greenfield retained-mode UI stack for D:
+
+* **Pure D typed DSL** (Compose/SwiftUI-style builders) as the canonical AST
+* **CTFE markup** (Slint/QML-inspired) that lowers into the same DSL
+* **Adapters** for Slint, QML, KDL, RSX, UXML, JSX, Godot `.tscn`, RON, JSON
+* **Flex layout** over contiguous POD nodes / arenas
+* **2D GPU:** link:https://code.dlang.org/packages/vello-d[`vello-d`] (registry, not a path pin)
+* **3D embeds:** link:https://code.dlang.org/packages/bindbc-wgpu[`bindbc-wgpu`] (same API family as Vello's wgpu backend)
+* **`tgc`:** thread-local GC so domain threads do not stop-the-world the UI loop
+
+== Configurations
+
+|===
+| Config | Use
+
+| `library` / `headless` | Software paint + stubs; CI and unit tests (no Rust/MSVC link)
+| `gpu` | Registry deps `vello-d` + `bindbc-wgpu` for real GPU hosts
+|===
+
+[source,powershell]
+----
+dub add rmgui
+dub build -c gpu          # apps with a window + Vello
+dub test -c headless      # CI
+----
+
+== Quick start (typed DSL)
+
+[source,d]
+----
+import rmgui;
+
+void main()
+{
+    UiBuilder b;
+    beginUi(b);
+    scope(exit) endUi();
+
+    auto root = VStack(
+        Text("Hello").fontSize(18).bold(),
+        Button("OK").onClick(() { /* ... */ })
+    ).spacing(8).padding(16);
+
+    App app;
+    app.ui = b;
+    app.setRoot(root);
+    app.backend = new SoftwareBackend(800, 600); // or VelloRenderBackend + attach(hwnd, ...)
+    app.frame();
+}
+----
+
+== CTFE markup
+
+[source,d]
+----
+auto card = mixin(uiMarkup!`
+    VStack {
+        spacing: 12;
+        Text { text: "Profile"; bold: true; }
+        Button { text: "Save"; on_click: saveProfile; }
+    }
+`);
+----
+
+== Installers
+
+* Windows: `installer/windows/rmgui-gallery.iss` (Inno Setup) → `dist/rmgui-gallery-setup.exe`
+* Unix: `installer/unix/install.sh` installs the gallery binary under `/usr/local`
+
+CI release workflow builds gallery artifacts and attaches them to GitHub Releases.
+
+== Changelog
+
+See link:CHANGELOG.adoc[CHANGELOG.adoc].
+
+== License
+
+BSL-1.0 — see link:LICENSE[LICENSE].

@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            triplet: linux-x64
+            artifact: rmgui-gallery
+          - os: ubuntu-24.04-arm
+            triplet: linux-arm64
+            artifact: rmgui-gallery
+          - os: windows-latest
+            triplet: windows-x64
+            artifact: rmgui-gallery.exe
+          - os: macos-14
+            triplet: macos-arm64
+            artifact: rmgui-gallery
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dlang-community/setup-dlang@v1
+        with:
+          compiler: ldc-latest
+      - name: Stamp version
+        shell: bash
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          if [ -n "$ver" ] && [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            echo "$ver" > VERSION
+          fi
+          echo "VERSION=$(cat VERSION)" >> "$GITHUB_ENV"
+      - name: Build gallery
+        run: dub build --compiler=ldc2 --build=release
+        working-directory: examples/gallery
+      - name: Stage artifact
+        shell: bash
+        run: |
+          mkdir -p "dist/${{ matrix.triplet }}"
+          if [ -f "examples/gallery/${{ matrix.artifact }}" ]; then
+            cp "examples/gallery/${{ matrix.artifact }}" "dist/${{ matrix.triplet }}/"
+          elif [ -f "examples/gallery/rmgui-gallery" ]; then
+            cp examples/gallery/rmgui-gallery "dist/${{ matrix.triplet }}/"
+          elif [ -f "examples/gallery/rmgui-gallery.exe" ]; then
+            cp examples/gallery/rmgui-gallery.exe "dist/${{ matrix.triplet }}/"
+          else
+            find examples/gallery -maxdepth 2 -type f -name 'rmgui-gallery*' -print
+            exit 1
+          fi
+      - name: Windows installer (Inno)
+        if: matrix.triplet == 'windows-x64'
+        shell: pwsh
+        run: |
+          choco install innosetup -y
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\windows\rmgui-gallery.iss
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.triplet }}
+          path: dist/${{ matrix.triplet }}/**
+
+  pack:
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: slices
+      - name: Zip slices
+        shell: bash
+        run: |
+          mkdir -p release
+          for d in slices/app-*; do
+            trip=${d#slices/app-}
+            (cd "$d" && zip -r "../../release/rmgui-gallery-${trip}.zip" .)
+          done
+          if [ -f slices/app-windows-x64/rmgui-gallery-setup.exe ]; then
+            cp slices/app-windows-x64/rmgui-gallery-setup.exe release/
+          fi
+          ls -la release
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-dub:
+    if: github.ref_type == 'tag'
+    needs: pack
+    uses: dlang-supplemental/dub-publish/.github/workflows/register-package.yml@main
+    with:
+      package: rmgui
+      url: https://github.com/${{ github.repository }}
+      root: .
+      ignore_fork: true
+    secrets:
+      DUB_REGISTRY_USER: ${{ secrets.DUB_REGISTRY_USER }}
+      DUB_REGISTRY_PASSWORD: ${{ secrets.DUB_REGISTRY_PASSWORD }}

@@ -1,0 +1,64 @@
+*
+# D build artifacts
+*.o
+*.obj
+*.lst
+*.lib
+*.a
+*.exe
+*.pdb
+*.dll
+*.so
+*.dylib
+dub.selections.json
+.dub/
+docs.json
+__dummy.html
+docs/
+
+# Installer / pack outputs
+dist/
+artifacts/
+*.msi
+*.msix
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.bin
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Local agent notes (never commit)
+MEMORIES.md
+!
+!LICENSE
+!README.adoc
+!README.md
+!CHANGELOG.adoc
+!AGENTS.md
+!VERSION
+!dub.sdl
+!source/
+!source/**
+!examples/
+!examples/**
+!installer/
+!installer/**
+!assets/
+!assets/**
+!changelog-details/
+!changelog-details/**
+!scripts/
+!scripts/**
+!.github/
+!.github/**
+!.gitignore
+# Re-ignore build outputs under allowed trees
+examples/**/*.exe
+examples/**/dub.selections.json

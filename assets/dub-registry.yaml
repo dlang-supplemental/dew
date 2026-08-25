@@ -1,0 +1,9 @@
+# Categories and registry metadata for dub-publish / agents.
+
+package: rmgui
+repository: https://github.com/dlang-supplemental/rmgui
+docs_url: https://github.com/dlang-supplemental/rmgui#readme
+categories:
+  - library.gui
+  - library.graphics
+  - library.nogc

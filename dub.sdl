@@ -1,0 +1,45 @@
+name "rmgui"
+description "Modern retained-mode GUI for D: typed DSL, CTFE markup, flex layout, Vello 2D + wgpu 3D, tgc-friendly"
+authors "amdphreak"
+copyright "Copyright © 2026, dlang-supplemental contributors"
+license "BSL-1.0"
+# Version comes from git tags (vX.Y.Z).
+
+targetType "library"
+targetName "rmgui"
+
+dependency "tgc" version="~>0.1.1"
+
+configuration "library" {
+	targetType "library"
+	importPaths "source"
+	sourcePaths "source"
+	stringImportPaths "."
+	versions "RmguiHeadless"
+}
+
+configuration "unittest" {
+	targetType "library"
+	importPaths "source"
+	sourcePaths "source"
+	stringImportPaths "."
+	versions "Tgc_default" "RmguiHeadless"
+}
+
+configuration "headless" {
+	targetType "library"
+	importPaths "source"
+	sourcePaths "source"
+	stringImportPaths "."
+	versions "RmguiHeadless"
+}
+
+# Production / GPU hosts: registry vello-d + bindbc-wgpu (no path pins).
+configuration "gpu" {
+	targetType "library"
+	importPaths "source"
+	sourcePaths "source"
+	stringImportPaths "."
+	dependency "vello-d" version="~>0.1.3"
+	dependency "bindbc-wgpu" version="~>0.27.0"
+}
