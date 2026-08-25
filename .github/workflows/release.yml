@@ -9,6 +9,9 @@ on:
 permissions:
   contents: write
 
+# DUB versions: GitHub webhook → code.dlang.org (no DUB_REGISTRY_* secrets required).
+# Owner ops (register / categories / logo) stay on local dubx or a one-shot workflow_dispatch.
+
 jobs:
   build:
     strategy:
@@ -23,6 +26,9 @@ jobs:
             artifact: rmgui-gallery
           - os: windows-latest
             triplet: windows-x64
+            artifact: rmgui-gallery.exe
+          - os: windows-11-arm
+            triplet: windows-arm64
             artifact: rmgui-gallery.exe
           - os: macos-14
             triplet: macos-arm64
@@ -65,6 +71,9 @@ jobs:
           choco install innosetup -y
           New-Item -ItemType Directory -Force -Path dist | Out-Null
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\windows\rmgui-gallery.iss
+          if (Test-Path dist\windows-x64\rmgui-gallery-setup.exe) {
+            Copy-Item dist\windows-x64\rmgui-gallery-setup.exe "dist\${{ matrix.triplet }}\"
+          }
       - uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.triplet }}
@@ -87,9 +96,8 @@ jobs:
             trip=${d#slices/app-}
             (cd "$d" && zip -r "../../release/rmgui-gallery-${trip}.zip" .)
           done
-          if [ -f slices/app-windows-x64/rmgui-gallery-setup.exe ]; then
-            cp slices/app-windows-x64/rmgui-gallery-setup.exe release/
-          fi
+          # Prefer installer from windows-x64 staging if present inside the zip tree
+          find slices -name 'rmgui-gallery-setup.exe' -exec cp {} release/ \;
           ls -la release
       - uses: softprops/action-gh-release@v2
         with:
@@ -98,16 +106,3 @@ jobs:
           name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-dub:
-    if: github.ref_type == 'tag'
-    needs: pack
-    uses: dlang-supplemental/dub-publish/.github/workflows/register-package.yml@main
-    with:
-      package: rmgui
-      url: https://github.com/${{ github.repository }}
-      root: .
-      ignore_fork: true
-    secrets:
-      DUB_REGISTRY_USER: ${{ secrets.DUB_REGISTRY_USER }}
-      DUB_REGISTRY_PASSWORD: ${{ secrets.DUB_REGISTRY_PASSWORD }}
