@@ -23,8 +23,21 @@ jobs:
           - os: macos-14
             triplet: macos-arm64
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: dew
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout dew
+        uses: actions/checkout@v4
+        with:
+          path: dew
+      # DUB validates path deps in every configuration; gpu pins ../vello-d.
+      - name: Checkout vello-d sibling
+        uses: actions/checkout@v4
+        with:
+          repository: dlang-supplemental/vello-d
+          ref: cursor/draw-text-0.1.4
+          path: vello-d
       - uses: dlang-community/setup-dlang@v1
         with:
           compiler: ldc-latest
@@ -34,4 +47,4 @@ jobs:
         run: dub build -c headless --compiler=ldc2 --build=release
       - name: Build gallery
         run: dub build --compiler=ldc2 --build=release
-        working-directory: examples/gallery
+        working-directory: dew/examples/gallery

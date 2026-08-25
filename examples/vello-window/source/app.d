@@ -1,12 +1,15 @@
 /**
  * Windowed dew demo: GLFW window + VelloRenderBackend + small UI.
  *
- * Build (Windows): MSVC toolchain (`link.exe` on PATH) and Rust/`cargo`
- * for the `vello-d` bridge. From repo root:
+ * Build: MSVC/Windows SDK (or Linux link) + Rust/`cargo` for the `vello-d`
+ * bridge. From repo root:
  *
  *   dub build --root examples/vello-window
  *
  * Headless CI uses `examples/gallery` with `-c headless` / `DewHeadless`.
+ *
+ * Platforms: Windows (HWND), Linux X11, Linux Wayland (when GLFW provides
+ * native handles). macOS still needs a Metal surface constructor in vello-d.
  */
 module vello_window;
 
@@ -20,6 +23,13 @@ version (Windows)
     import core.sys.windows.windows;
     extern (C) HWND glfwGetWin32Window(GLFWwindow* window);
 }
+else version (linux)
+{
+    extern (C) void* glfwGetX11Display();
+    extern (C) ulong glfwGetX11Window(GLFWwindow* window);
+    extern (C) void* glfwGetWaylandDisplay();
+    extern (C) void* glfwGetWaylandWindow(GLFWwindow* window);
+}
 
 void main()
 {
@@ -27,18 +37,25 @@ void main()
     writeln("vello-window: GLFW + VelloRenderBackend");
 
     version (Windows)
-    {
-        runWindows();
-    }
+        runWindowed();
+    else version (linux)
+        runWindowed();
     else
     {
         stderr.writeln(
-            "dew-vello-window: Windows HWND path only for now (matches vello-d demos).");
+            "dew-vello-window: this platform needs a vello-d surface constructor (macOS Metal TBD).");
     }
 }
 
 version (Windows)
-void runWindows()
+    enum bool dewVelloWindowHost = true;
+else version (linux)
+    enum bool dewVelloWindowHost = true;
+else
+    enum bool dewVelloWindowHost = false;
+
+static if (dewVelloWindowHost)
+void runWindowed()
 {
     if (!glfwInit())
     {
@@ -60,24 +77,33 @@ void runWindows()
     scope (exit)
         glfwDestroyWindow(window);
 
-    HWND hwnd = glfwGetWin32Window(window);
-    HINSTANCE hinstance = GetModuleHandleA(null);
-
     auto gpu = new VelloRenderBackend();
-    gpu.attach(cast(void*) hwnd, cast(void*) hinstance, winW, winH);
+    if (!attachBackend(gpu, window, winW, winH))
+    {
+        stderr.writeln("VelloRenderBackend attach failed");
+        return;
+    }
     scope (exit)
         gpu.shutdown();
 
+    Arena frameArena;
+    scope (exit)
+        frameArena.dispose();
+
     App app;
+    app.ui.arena = &frameArena;
     beginUi(app.ui);
     scope (exit)
         endUi();
 
     int clicks;
+    auto mesh = new Wgpu3dViewport();
+    mesh.initHeadless(240, 160);
+    mesh.renderEmbed();
 
     void rebuild() @safe
     {
-        app.ui.store.clear();
+        app.ui.beginFrame();
         beginUi(app.ui);
         auto label = format("clicks: %s", clicks);
         app.setRoot(VStack(
@@ -85,7 +111,10 @@ void runWindows()
             Text(label).fontSize(16),
             Button("Tap / click")
                 .touchFriendly()
-                .onClick(() { clicks++; })
+                .onClick(() { clicks++; }),
+            CheckBox("Remember me", true),
+            MeshView(mesh.embedPixels, mesh.width, mesh.height)
+                .width(240).height(160),
         ).spacing(12).padding(24));
     }
 
@@ -105,25 +134,73 @@ void runWindows()
             && (fbW != cast(int) app.width || fbH != cast(int) app.height))
             app.resize(fbW, fbH);
 
+        double mx, my;
+        glfwGetCursorPos(window, &mx, &my);
         const down = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        if (down && !mouseWasDown)
+
+        if (down != mouseWasDown)
         {
-            double mx, my;
-            glfwGetCursorPos(window, &mx, &my);
             PointerEvent ev;
             ev.x = cast(float) mx;
             ev.y = cast(float) my;
             ev.kind = PointerKind.Mouse;
-            ev.phase = PointerPhase.Down;
+            ev.phase = down ? PointerPhase.Down : PointerPhase.Up;
             ev.button = PointerButton.Left;
-            ev.pressed = true;
+            ev.pressed = down;
             ev.primary = true;
             const before = clicks;
             if (app.pointer(ev) || clicks != before)
                 rebuild();
         }
+        else if (down)
+        {
+            PointerEvent ev;
+            ev.x = cast(float) mx;
+            ev.y = cast(float) my;
+            ev.kind = PointerKind.Mouse;
+            ev.phase = PointerPhase.Move;
+            ev.button = PointerButton.Left;
+            ev.pressed = true;
+            ev.primary = true;
+            app.pointer(ev);
+        }
         mouseWasDown = down;
 
+        mesh.renderEmbed();
         app.frame();
     }
+}
+
+static if (dewVelloWindowHost)
+bool attachBackend(VelloRenderBackend gpu, GLFWwindow* window, uint w, uint h) @trusted
+{
+    version (Windows)
+    {
+        HWND hwnd = glfwGetWin32Window(window);
+        HINSTANCE hinstance = GetModuleHandleA(null);
+        gpu.attach(cast(void*) hwnd, cast(void*) hinstance, w, h);
+        return gpu.attached;
+    }
+    else version (linux)
+    {
+        // Prefer Wayland when GLFW created a Wayland window; else X11.
+        auto wlDisp = glfwGetWaylandDisplay();
+        auto wlSurf = glfwGetWaylandWindow(window);
+        if (wlDisp !is null && wlSurf !is null)
+        {
+            gpu.attachWayland(wlDisp, wlSurf, w, h);
+            if (gpu.attached)
+                return true;
+        }
+        auto xDisp = glfwGetX11Display();
+        auto xWin = glfwGetX11Window(window);
+        if (xDisp !is null && xWin != 0)
+        {
+            gpu.attachX11(xDisp, xWin, 0, w, h);
+            return gpu.attached;
+        }
+        return false;
+    }
+    else
+        return false;
 }

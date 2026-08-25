@@ -7,9 +7,11 @@ Project facts for agents. Workstation/env facts live only in `$CODE_ROOT/MEMORIE
 - Tagline: **Dew it!** (not “Just Dew it” — avoid Nike slogan parody in product chrome)
 - Pure D typed DSL is canonical; CTFE markup and format adapters lower into it
 - Companion app-kit: `dlang-supplemental/dui` (depends on `dew`)
-- GPU: `-c gpu` pulls registry `vello-d` (`~>0.1.3`) + `bindbc-wgpu` — never path-pin local `../vello-d`
+- GPU: `-c gpu` path-pins sibling `../vello-d` (CI checks it out; hive already has it). After registry `vello-d ~>0.1.4`, flip the pin and drop the sibling checkout from CI.
 - Default/headless configs set `DewHeadless` so CI does not run the Vello Rust pre-build
-- 3D embeds: wgpu (`bindbc-wgpu`) to stay in the same API family as Vello
-- DUB versions: GitHub webhook → code.dlang.org (no CI `DUB_REGISTRY_*` secrets for bumps)
+- Pointer: `App.pointers` (`PointerRouter`) captures contacts; button `onClick` fires on **Up**
+- 3D embeds: `MeshView` + `Wgpu3dViewport.embedPixels` composited via `DrawOp.ImageBlit`; shared wgpu device with Vello is still open
+- Fonts: `setUiFont` / system default via `dew.backend.font` for Vello `drawText`
+- DUB versions: keep `version` in `dub.sdl` in sync with `VERSION` / `DEW_VERSION` / tag `vX.Y.Z`
 - Registry metadata in `assets/`; categories: `library.gui`, `library.graphics`, `library.nogc`
 - Version source of truth: `VERSION` + git tag `vX.Y.Z` (also keep `DEW_VERSION` in sync for `import`)

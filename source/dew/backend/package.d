@@ -5,3 +5,4 @@ public import dew.backend.iface;
 public import dew.backend.software;
 public import dew.backend.vello_backend;
 public import dew.backend.wgpu3d;
+public import dew.backend.font;

@@ -41,6 +41,8 @@ endif::[]
 
 Package name on DUB: `dew`. App-kit companion: link:https://github.com/dlang-supplemental/dui[`dui`].
 
+**Pointer note:** button `onClick` fires on pointer **Up** (within slop, and not after a drag). Hosts should forward Move/Up/Cancel, not only Down.
+
 == Migration from `rmgui`
 
 The legacy DUB package **`rmgui` was removed** from https://code.dlang.org/[code.dlang.org]. Use **`dew`** only:

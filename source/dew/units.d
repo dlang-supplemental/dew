@@ -60,3 +60,9 @@ enum Axis : ubyte
     Horizontal,
     Vertical,
 }
+
+enum FlexWrap : ubyte
+{
+    NoWrap,
+    Wrap,
+}

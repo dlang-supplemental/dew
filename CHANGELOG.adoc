@@ -1,5 +1,20 @@
 = changelog
 
+== 2026-08-25 - Vello glyphs, paths, mesh embeds
+
+* GPU backend honors clips, strokes, rounded fills, path ops, and system-font glyph runs (`vello-d` draw_text).
+* `MeshView` + RGBA `ImageBlit` compositing; soft-triangle embed from `Wgpu3dViewport`.
+* `examples/vello-window`: Linux X11/Wayland attach; send pointer Up (clicks fire on Up).
+* Optional `UiBuilder.arena` for rebuild text interning.
+
+== 2026-08-25 - Pointer capture, layout, forms primitives
+
+* `PointerRouter`: capture, multi-touch Move/Up/Cancel, drag-vs-tap; buttons click on **Up**.
+* `KeyEvent` + Tab focus cycle / Enter activate on `App`.
+* Layout: `JustifyContent`, `ScrollView`, clip emitters, injectable text measure, optional wrap.
+* DSL: `TextField`, `CheckBox`, `ScrollView`, `draggable`, scroll/clip helpers.
+* Software backend clip stack; version **0.1.4**.
+
 == 2026-08-24 - Windowed Vello demo + rmgui removed
 
 * Added `examples/vello-window` (GLFW + `VelloRenderBackend`).
@@ -18,5 +33,7 @@
 
 Details:
 
+* link:changelog-details/2026-08-25 - vello glyphs paths mesh.adoc[2026-08-25 - Vello glyphs paths mesh]
+* link:changelog-details/2026-08-25 - pointer layout forms.adoc[2026-08-25 - pointer layout forms]
 * link:changelog-details/2026-08-24 - windowed vello and rmgui removal.adoc[2026-08-24 - windowed vello and rmgui removal]
 * link:changelog-details/2026-08-24 - rename to dew.adoc[2026-08-24 - rename to dew]

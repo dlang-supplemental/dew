@@ -4,16 +4,21 @@ module dew.node;
 import dew.units;
 import dew.input;
 
-public import dew.input : ClickHandler, PointerHandler, TouchCapability, PointerEvent;
+public import dew.input : ClickHandler, PointerHandler, KeyHandler, TouchCapability, PointerEvent;
 
 enum NodeKind : ubyte
 {
     VStack,
     HStack,
     Container,
+    ScrollView,
     Text,
     Button,
+    TextField,
+    CheckBox,
     Spacer,
+    /// Composited 3D/mesh embed (RGBA blit from a `Wgpu3dViewport` or custom buffer).
+    MeshView,
     Custom,
 }
 
@@ -45,13 +50,34 @@ struct Node
     bool bold;
     AlignItems alignItems = AlignItems.Start;
     JustifyContent justifyContent = JustifyContent.Start;
+    FlexWrap flexWrap = FlexWrap.NoWrap;
 
     /// Interned / owned text slice (may point into arena).
     const(char)[] text;
+    /// Placeholder for TextField when `text` is empty.
+    const(char)[] placeholder;
     ClickHandler onClick;
     PointerHandler onPointer;
+    KeyHandler onKey;
     /// Touch / pointer capability mask (see `TouchCapability`).
     uint touchCaps;
+
+    /// Participates in Tab focus order when true (Buttons/fields are always focusable).
+    bool focusable;
+    /// CheckBox checked state / TextField password flag reuse.
+    bool checked;
+    bool password;
+
+    /// ScrollView content offset (positive = content shifted up/left).
+    float scrollX = 0;
+    float scrollY = 0;
+    /// Clip children to the node's box when painting (ScrollView defaults on).
+    bool clipContent;
+
+    /// MeshView: RGBA8 buffer composited via ImageBlit (may be null / empty).
+    const(ubyte)[] meshPixels;
+    uint meshSrcW;
+    uint meshSrcH;
 
     /// Layout output (computed).
     float x, y, w, h;
