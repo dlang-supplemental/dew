@@ -1,5 +1,13 @@
 = changelog
 
+== 2026-08-25 - Pointer capture, layout, forms primitives
+
+* `PointerRouter`: capture, multi-touch Move/Up/Cancel, drag-vs-tap; buttons click on **Up**.
+* `KeyEvent` + Tab focus cycle / Enter activate on `App`.
+* Layout: `JustifyContent`, `ScrollView`, clip emitters, injectable text measure, optional wrap.
+* DSL: `TextField`, `CheckBox`, `ScrollView`, `draggable`, scroll/clip helpers.
+* Software backend clip stack; version **0.1.4**.
+
 == 2026-08-24 - Windowed Vello demo + rmgui removed
 
 * Added `examples/vello-window` (GLFW + `VelloRenderBackend`).
@@ -18,5 +26,6 @@
 
 Details:
 
+* link:changelog-details/2026-08-25 - pointer layout forms.adoc[2026-08-25 - pointer layout forms]
 * link:changelog-details/2026-08-24 - windowed vello and rmgui removal.adoc[2026-08-24 - windowed vello and rmgui removal]
 * link:changelog-details/2026-08-24 - rename to dew.adoc[2026-08-24 - rename to dew]

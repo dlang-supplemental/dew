@@ -7,9 +7,9 @@ Slogan: *Dew it!*
 == Priority next
 
 . [*x*] Real **windowed Vello demo** (`examples/vello-window` — GLFW + `VelloRenderBackend`)
-. **Touch** capture, multi-touch move, and gestures
+. [*x*] **Touch** capture, multi-touch move, and drag-vs-tap (`PointerRouter`)
 . [*x*] **Remove** the legacy `rmgui` DUB package (done — use `dew` only)
-. Flesh out **dui** state / rebuild (see dui roadmap)
+. [*x*] Flesh out **dui** state / rebuild / forms / focus / nav / gestures (see dui roadmap)
 
 == Engine gaps
 
@@ -21,8 +21,9 @@ Slogan: *Dew it!*
 
 === Vello / 2D GPU
 
-* Vello path is thin: rectangles only
-* Missing glyph runs, paths, clips
+* Vello path is still thin: rectangles (+ clip no-ops on GPU backend)
+* [*x*] Software backend honors `ClipPush` / `ClipPop`
+* Missing real glyph runs and vector paths on Vello
 * No shared wgpu device with 3D embeds
 
 === wgpu / 3D
@@ -32,13 +33,24 @@ Slogan: *Dew it!*
 
 === Touch / pointer
 
-* Caps + tap / slop only
-* No pointer capture, multi-touch move, or gesture recognition
+* [*x*] Pointer capture across Move / Up / Cancel
+* [*x*] Multi-touch ids (up to 16 active contacts)
+* [*x*] Drag vs tap (slop + `TouchCapability.Drag`)
+* [*x*] Keyboard Tab focus cycle + Enter activate (`KeyEvent`)
+* Higher-level gesture sugar lives in **dui** (`onGesture`)
 
 === Layout
 
-* Basic flex only (VStack main-axis text/button sizing fixed)
-* No wrap, grid, intrinsic text measure, or scroll
+* [*x*] `JustifyContent` honored when children do not flex-grow
+* [*x*] `ScrollView` + scroll offsets + clip
+* [*x*] Injectable text measure (`setTextMeasure`)
+* [*x*] Optional `FlexWrap.Wrap` on horizontal stacks
+* No full CSS grid; wrap is single-pass greedy rows only
+
+=== Forms (engine primitives)
+
+* [*x*] `TextField` / `CheckBox` node kinds + paint
+* Bound helpers and validation live in **dui**
 
 === Memory / `@nogc`
 
@@ -52,7 +64,7 @@ Slogan: *Dew it!*
 
 == App-kit (dui)
 
-`dui` is intentionally barebones today (`DuiApp`, `State!T`). Forms, focus traversal, navigation, and a gesture layer are tracked in the dui roadmap (and depend on engine touch/layout progress above).
+`dui` now ships forms, focus, navigation, and gesture helpers on top of dew primitives. See the dui roadmap for remaining app-kit polish.
 
 == Ship / hygiene
 
