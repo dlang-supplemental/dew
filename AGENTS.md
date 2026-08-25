@@ -7,7 +7,7 @@ Project facts for agents. Workstation/env facts live only in `$CODE_ROOT/MEMORIE
 - Tagline: **Dew it!** (not “Just Dew it” — avoid Nike slogan parody in product chrome)
 - Pure D typed DSL is canonical; CTFE markup and format adapters lower into it
 - Companion app-kit: `dlang-supplemental/dui` (depends on `dew`)
-- GPU: `-c gpu` depends on git `dlang-supplemental/vello-d` branch `cursor/draw-text-0.1.4` until registry `~>0.1.4`; never path-pin in `dub.sdl` / `dub.selections.json` (DUB resolves path selections for every config and breaks headless CI)
+- GPU: `-c gpu` path-pins sibling `../vello-d` (CI checks it out; hive already has it). After registry `vello-d ~>0.1.4`, flip the pin and drop the sibling checkout from CI.
 - Default/headless configs set `DewHeadless` so CI does not run the Vello Rust pre-build
 - Pointer: `App.pointers` (`PointerRouter`) captures contacts; button `onClick` fires on **Up**
 - 3D embeds: `MeshView` + `Wgpu3dViewport.embedPixels` composited via `DrawOp.ImageBlit`; shared wgpu device with Vello is still open

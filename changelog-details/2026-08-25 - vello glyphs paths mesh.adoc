@@ -5,4 +5,4 @@
 * **MeshView** + `Wgpu3dViewport.embedPixels` soft-triangle embed composited into 2D.
 * **Window host:** Linux X11/Wayland attach in `examples/vello-window`; pointer Down+Up (click on Up).
 * **Arena:** optional `UiBuilder.arena` + `beginFrame` for text interning.
-* Path-pin avoided in recipe/`dub.selections.json` (breaks headless CI); GPU uses git `vello-d` branch until registry `~>0.1.4`.
+* Sibling `../vello-d` path pin for `-c gpu` (CI checks out the draw-text branch); flip to registry `~>0.1.4` after publish.

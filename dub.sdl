@@ -35,14 +35,14 @@ configuration "headless" {
 	versions "DewHeadless"
 }
 
-# GPU hosts. Prefer registry once vello-d 0.1.4 is published (`~>0.1.4`).
-# Do not path-pin in this recipe or dub.selections.json — DUB loads path
-# selections for every configuration and breaks headless CI.
+# GPU hosts need a sibling checkout of vello-d (CI does this; local hive already has it).
+# Flip to registry `~>0.1.4` after that version is published — path pins are validated
+# by DUB for every configuration, so CI must keep the sibling present.
 configuration "gpu" {
 	targetType "library"
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	dependency "vello-d" repository="git+https://github.com/dlang-supplemental/vello-d.git" version="cursor/draw-text-0.1.4"
+	dependency "vello-d" path="../vello-d"
 	dependency "bindbc-wgpu" version="~>0.27.0"
 }
