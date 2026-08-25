@@ -1,0 +1,19 @@
+name "dew-vello-window"
+description "Windowed dew + VelloRenderBackend demo (GLFW)"
+authors "amdphreak"
+license "BSL-1.0"
+
+dependency "dew" path="../.."
+subConfiguration "dew" "gpu"
+dependency "glfw-d" version="~>1.1.2"
+dependency "tgc" version="~>0.1.1"
+
+targetType "executable"
+targetName "dew-vello-window"
+sourcePaths "source"
+importPaths "source"
+stringImportPaths "../.."
+
+# GPU host: needs MSVC link.exe + Rust/cargo (vello-d bridge preBuild).
+# Build: dub build --root examples/vello-window
+# Headless gallery remains: examples/gallery with DewHeadless.

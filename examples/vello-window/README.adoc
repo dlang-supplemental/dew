@@ -1,0 +1,25 @@
+# Windowed Vello demo
+
+GLFW window that attaches dew's `VelloRenderBackend` and presents a tiny UI.
+
+## Requirements (Windows)
+
+* MSVC linker: `link.exe` on `PATH` (Visual Studio Build Tools / VS Developer shell)
+* Rust toolchain: `cargo` / `rustc` (vello-d builds the Rust bridge in `preBuildCommands`)
+* DUB config: this example selects dew's `gpu` configuration (`vello-d` + `bindbc-wgpu`)
+
+## Build / run
+
+From the dew repo root:
+
+[source,powershell]
+----
+dub build --root examples/vello-window
+dub run --root examples/vello-window
+----
+
+If `link.exe` is missing, the build fails at the vello-d / MSVC link step — open an MSVC developer shell (or add Build Tools to `PATH`) and retry.
+
+## Headless
+
+CI and software paint stay on `examples/gallery` with `DewHeadless` / `dub test -c headless`. Do not set `DewHeadless` on this example.
