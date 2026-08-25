@@ -3,3 +3,4 @@
 * **`examples/vello-window`:** GLFW host attaches `VelloRenderBackend`, builds a small dew UI, presents frames. Requires MSVC `link.exe` + Rust/`cargo` for the `vello-d` bridge (`-c gpu` / example `subConfiguration`).
 * **Layout:** VStack children that are Text/Button now size on the main axis by line height, not the horizontal text-width estimate (fixes hit-testing for vertical stacks).
 * **Registry:** Deleted DUB package `rmgui` (no dependents). README migration section points everyone at `dew`.
+* **Version import:** `dewVersion` uses string-import `DEW_VERSION` so a dependent's `VERSION` on `-J` cannot shadow it.

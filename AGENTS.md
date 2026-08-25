@@ -12,4 +12,4 @@ Project facts for agents. Workstation/env facts live only in `$CODE_ROOT/MEMORIE
 - 3D embeds: wgpu (`bindbc-wgpu`) to stay in the same API family as Vello
 - DUB versions: GitHub webhook → code.dlang.org (no CI `DUB_REGISTRY_*` secrets for bumps)
 - Registry metadata in `assets/`; categories: `library.gui`, `library.graphics`, `library.nogc`
-- Version source of truth: `VERSION` + git tag `vX.Y.Z`
+- Version source of truth: `VERSION` + git tag `vX.Y.Z` (also keep `DEW_VERSION` in sync for `import`)

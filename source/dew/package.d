@@ -25,7 +25,8 @@ public import dew.backend;
 
 enum string dewVersion = {
     import std.string : strip;
-    return import("VERSION").strip;
+    // Unique string-import name so dependents' VERSION files do not shadow.
+    return import("DEW_VERSION").strip;
 }();
 
 enum string dewSlogan = "Dew it!";

@@ -5,6 +5,7 @@
 * Added `examples/vello-window` (GLFW + `VelloRenderBackend`).
 * Fixed VStack main-axis sizing for Text/Button (height, not width estimate).
 * Removed legacy DUB package `rmgui` from code.dlang.org — use `dew` only.
+* `dewVersion` reads `DEW_VERSION` so dependents' `VERSION` string-imports do not shadow.
 
 == 2026-08-24 - Rename to dew + Dew it!
 
