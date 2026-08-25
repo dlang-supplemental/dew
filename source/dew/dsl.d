@@ -74,6 +74,12 @@ struct Widget
         return this;
     }
 
+    Widget flexWrap(FlexWrap w) @safe @nogc
+    {
+        n.flexWrap = w;
+        return this;
+    }
+
     Widget fontSize(float s) @safe @nogc
     {
         n.fontSize = s;
@@ -98,6 +104,12 @@ struct Widget
         return this;
     }
 
+    Widget onKey(KeyHandler h) @safe @nogc
+    {
+        n.onKey = h;
+        return this;
+    }
+
     Widget touchCaps(uint caps) @safe @nogc
     {
         n.touchCaps = caps;
@@ -111,6 +123,53 @@ struct Widget
             n.touchCaps |= TouchCapability.Tap | TouchCapability.TouchTarget;
         else
             n.touchCaps = TouchCapability.None;
+        return this;
+    }
+
+    /// Enable drag tracking (Move past slop marks the capture as dragging).
+    Widget draggable(bool enable = true) @safe @nogc
+    {
+        if (enable)
+            n.touchCaps |= TouchCapability.Drag | TouchCapability.Tap;
+        else
+            n.touchCaps &= ~TouchCapability.Drag;
+        return this;
+    }
+
+    Widget focusable(bool enable = true) @safe @nogc
+    {
+        n.focusable = enable;
+        return this;
+    }
+
+    Widget placeholder(const(char)[] p) @safe @nogc
+    {
+        n.placeholder = p;
+        return this;
+    }
+
+    Widget checked(bool v) @safe @nogc
+    {
+        n.checked = v;
+        return this;
+    }
+
+    Widget password(bool v = true) @safe @nogc
+    {
+        n.password = v;
+        return this;
+    }
+
+    Widget scrollOffset(float sx, float sy) @safe @nogc
+    {
+        n.scrollX = sx;
+        n.scrollY = sy;
+        return this;
+    }
+
+    Widget clipContent(bool enable = true) @safe @nogc
+    {
+        n.clipContent = enable;
         return this;
     }
 
@@ -138,6 +197,8 @@ struct UiBuilder
         Node n;
         n.kind = kind;
         n.text = text;
+        if (kind == NodeKind.ScrollView)
+            n.clipContent = true;
         auto id = store.alloc(n);
         return Widget(id, &store);
     }
@@ -166,6 +227,14 @@ struct UiBuilder
         return w;
     }
 
+    Widget scrollView(Widget[] kids...) return @safe
+    {
+        auto w = make(NodeKind.ScrollView);
+        foreach (c; kids)
+            store.appendChild(w.id, c.id);
+        return w;
+    }
+
     Widget text(const(char)[] s) return @safe nothrow
     {
         return make(NodeKind.Text, s);
@@ -174,6 +243,20 @@ struct UiBuilder
     Widget button(const(char)[] label) return @safe nothrow
     {
         return make(NodeKind.Button, label);
+    }
+
+    Widget textField(const(char)[] value = null) return @safe
+    {
+        auto w = make(NodeKind.TextField, value);
+        w.focusable(true);
+        return w;
+    }
+
+    Widget checkBox(const(char)[] label, bool isChecked = false) return @safe
+    {
+        auto w = make(NodeKind.CheckBox, label);
+        w.checked(isChecked).focusable(true).touchFriendly();
+        return w;
     }
 
     Widget spacer(float grow = 1) return @safe
@@ -221,6 +304,11 @@ Widget Container(Widget[] kids...) @safe
     return ui.container(kids);
 }
 
+Widget ScrollView(Widget[] kids...) @safe
+{
+    return ui.scrollView(kids);
+}
+
 Widget Text(const(char)[] s) @safe
 {
     return ui.text(s);
@@ -229,6 +317,16 @@ Widget Text(const(char)[] s) @safe
 Widget Button(const(char)[] label) @safe
 {
     return ui.button(label);
+}
+
+Widget TextField(const(char)[] value = null) @safe
+{
+    return ui.textField(value);
+}
+
+Widget CheckBox(const(char)[] label, bool isChecked = false) @safe
+{
+    return ui.checkBox(label, isChecked);
 }
 
 Widget Spacer(float grow = 1) @safe
