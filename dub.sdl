@@ -1,4 +1,4 @@
-name "dew"
+﻿name "dew"
 description "Modern retained-mode GUI for D: typed DSL, CTFE markup, flex layout, Vello 2D + wgpu 3D, tgc-friendly"
 authors "amdphreak"
 copyright "Copyright © 2026, dlang-supplemental contributors"
@@ -35,13 +35,14 @@ configuration "headless" {
 	versions "DewHeadless"
 }
 
-# Production / GPU hosts: prefer registry after vello-d 0.1.4 is published.
-# Until then, path-pin sibling hive clone (same pattern as dui → dew).
+# GPU hosts. Prefer registry once vello-d 0.1.4 is published (`~>0.1.4`).
+# Do not path-pin in this recipe or dub.selections.json — DUB loads path
+# selections for every configuration and breaks headless CI.
 configuration "gpu" {
 	targetType "library"
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	dependency "vello-d" path="../vello-d"
+	dependency "vello-d" repository="git+https://github.com/dlang-supplemental/vello-d.git" version="cursor/draw-text-0.1.4"
 	dependency "bindbc-wgpu" version="~>0.27.0"
 }
