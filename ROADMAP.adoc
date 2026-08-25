@@ -1,0 +1,65 @@
+= Roadmap
+
+Known gaps and near-term priorities for **dew** (engine). App-kit gaps live primarily in link:https://github.com/dlang-supplemental/dui[`dui`]; that repo points here for engine work.
+
+Slogan: *Dew it!*
+
+== Priority next
+
+. Real **windowed Vello demo** (packaged Win32/GLFW host attaching `VelloRenderBackend`)
+. **Touch** capture, multi-touch move, and gestures
+. **Deprecate** the legacy `rmgui` DUB package
+. Flesh out **dui** state / rebuild (see dui roadmap)
+
+== Engine gaps
+
+=== Window host
+
+* No real window host yet — gallery runs headless
+* No packaged Win32 / GLFW loop that attaches `VelloRenderBackend`
+
+=== Vello / 2D GPU
+
+* Vello path is thin: rectangles only
+* Missing glyph runs, paths, clips
+* No shared wgpu device with 3D embeds
+
+=== wgpu / 3D
+
+* wgpu 3D is bootstrap / stub
+* Not yet embeddable mesh viewports with UI compositing
+
+=== Touch / pointer
+
+* Caps + tap / slop only
+* No pointer capture, multi-touch move, or gesture recognition
+
+=== Layout
+
+* Basic flex only
+* No wrap, grid, intrinsic text measure, or scroll
+
+=== Memory / `@nogc`
+
+* Arenas and `@nogc` UI thread are designed
+* Main path still uses GC arrays / strings
+
+=== Markup adapters
+
+* Adapters are CTFE subsets / heuristics
+* No Rust `i-slint-compiler` CLI integration
+
+== App-kit (dui)
+
+`dui` is intentionally barebones today (`DuiApp`, `State!T`). Forms, focus traversal, navigation, and a gesture layer are tracked in the dui roadmap (and depend on engine touch/layout progress above).
+
+== Ship / hygiene
+
+* Old **`rmgui`** DUB package still exists (deprecate after consumers move to `dew`)
+* Local hive folder may still be named `rmgui` (junction to `dew`) — machine-local only; not a committed concern
+* Org Antora docs hub / public-readme chrome not fully wired (README already links Explore the docs)
+* Binary Tailor one-file pack skipped for now (per-triplet zips instead)
+
+== Out of scope for this file
+
+This roadmap records unfinished work; it is not a commitment schedule. Prefer issues for external coordination when work leaves this repo.

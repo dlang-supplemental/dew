@@ -96,6 +96,10 @@ void main()
 }
 ----
 
+== Roadmap
+
+Unfinished work and near-term priorities: link:ROADMAP.adoc[ROADMAP.adoc].
+
 == Changelog
 
 See link:CHANGELOG.adoc[CHANGELOG.adoc].
