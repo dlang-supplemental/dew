@@ -5,9 +5,18 @@ enum DrawOp : ubyte
 {
     FillRect,
     StrokeRect,
+    FillRoundedRect,
+    FillCircle,
     TextRun,
     ClipPush,
     ClipPop,
+    PathBegin,
+    PathMoveTo,
+    PathLineTo,
+    PathClose,
+    PathFill,
+    PathStroke,
+    ImageBlit,
 }
 
 struct ColorRgba
@@ -28,6 +37,10 @@ struct DrawCmd
     float fontSize;
     bool bold;
     const(char)[] text;
+    /// Stroke width, corner radius, or unused.
+    float param;
+    uint srcW, srcH;
+    const(ubyte)[] pixels;
 }
 
 struct DisplayList
@@ -51,7 +64,7 @@ struct DisplayList
         cmds ~= d;
     }
 
-    void strokeRect(float x, float y, float w, float h, ColorRgba c) @safe nothrow
+    void strokeRect(float x, float y, float w, float h, ColorRgba c, float width = 1) @safe nothrow
     {
         DrawCmd d;
         d.op = DrawOp.StrokeRect;
@@ -59,6 +72,31 @@ struct DisplayList
         d.y = y;
         d.w = w;
         d.h = h;
+        d.color = c;
+        d.param = width;
+        cmds ~= d;
+    }
+
+    void fillRoundedRect(float x, float y, float w, float h, float radius, ColorRgba c) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.FillRoundedRect;
+        d.x = x;
+        d.y = y;
+        d.w = w;
+        d.h = h;
+        d.param = radius;
+        d.color = c;
+        cmds ~= d;
+    }
+
+    void fillCircle(float cx, float cy, float radius, ColorRgba c) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.FillCircle;
+        d.x = cx;
+        d.y = cy;
+        d.param = radius;
         d.color = c;
         cmds ~= d;
     }
@@ -91,6 +129,71 @@ struct DisplayList
     {
         DrawCmd d;
         d.op = DrawOp.ClipPop;
+        cmds ~= d;
+    }
+
+    void pathBegin() @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathBegin;
+        cmds ~= d;
+    }
+
+    void pathMoveTo(float x, float y) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathMoveTo;
+        d.x = x;
+        d.y = y;
+        cmds ~= d;
+    }
+
+    void pathLineTo(float x, float y) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathLineTo;
+        d.x = x;
+        d.y = y;
+        cmds ~= d;
+    }
+
+    void pathClose() @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathClose;
+        cmds ~= d;
+    }
+
+    void pathFill(ColorRgba c) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathFill;
+        d.color = c;
+        cmds ~= d;
+    }
+
+    void pathStroke(float width, ColorRgba c) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.PathStroke;
+        d.param = width;
+        d.color = c;
+        cmds ~= d;
+    }
+
+    /// RGBA8 unpremultiplied, row-major `srcW * srcH * 4` bytes.
+    void imageBlit(float x, float y, float dstW, float dstH,
+        uint srcW, uint srcH, const(ubyte)[] pixels) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.ImageBlit;
+        d.x = x;
+        d.y = y;
+        d.w = dstW;
+        d.h = dstH;
+        d.srcW = srcW;
+        d.srcH = srcH;
+        d.pixels = pixels;
         cmds ~= d;
     }
 }

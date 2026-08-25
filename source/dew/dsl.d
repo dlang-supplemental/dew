@@ -8,6 +8,7 @@ module dew.dsl;
 import dew.node;
 import dew.units;
 import dew.input;
+import dew.arena;
 
 /// Builder wrapping a `NodeId` with method chaining.
 struct Widget
@@ -191,16 +192,42 @@ struct Widget
 struct UiBuilder
 {
     NodeStore store;
+    /// Optional frame arena for text slices (`@nogc`-friendly rebuilds).
+    Arena* arena;
+
+    /// Reset arena between rebuilds when set.
+    void beginFrame() @safe nothrow
+    {
+        if (arena !is null)
+            arena.reset();
+        store.clear();
+    }
+
+    private const(char)[] intern(const(char)[] s) return @trusted nothrow
+    {
+        if (arena is null || !s.length)
+            return s;
+        return arena.dupString(s);
+    }
 
     Widget make(NodeKind kind, const(char)[] text = null) return @safe nothrow
     {
         Node n;
         n.kind = kind;
-        n.text = text;
+        n.text = intern(text);
         if (kind == NodeKind.ScrollView)
             n.clipContent = true;
         auto id = store.alloc(n);
         return Widget(id, &store);
+    }
+
+    Widget meshView(const(ubyte)[] rgba, uint srcW, uint srcH) return @safe nothrow
+    {
+        auto w = make(NodeKind.MeshView);
+        (*w.store)[w.id].meshPixels = rgba;
+        (*w.store)[w.id].meshSrcW = srcW;
+        (*w.store)[w.id].meshSrcH = srcH;
+        return w;
     }
 
     Widget vstack(Widget[] kids...) return @safe
@@ -327,6 +354,11 @@ Widget TextField(const(char)[] value = null) @safe
 Widget CheckBox(const(char)[] label, bool isChecked = false) @safe
 {
     return ui.checkBox(label, isChecked);
+}
+
+Widget MeshView(const(ubyte)[] rgba, uint srcW, uint srcH) @safe
+{
+    return ui.meshView(rgba, srcW, srcH);
 }
 
 Widget Spacer(float grow = 1) @safe

@@ -1,0 +1,8 @@
+= 2026-08-25 - Vello glyphs paths mesh embeds
+
+* **Vello backend:** clip layers, stroke/rounded/circle, path ops, system-font `drawText` (via `vello-d` ≥ 0.1.4 `draw_text`).
+* **Display list:** `FillRoundedRect`, `FillCircle`, path commands, `ImageBlit`.
+* **MeshView** + `Wgpu3dViewport.embedPixels` soft-triangle embed composited into 2D.
+* **Window host:** Linux X11/Wayland attach in `examples/vello-window`; pointer Down+Up (click on Up).
+* **Arena:** optional `UiBuilder.arena` + `beginFrame` for text interning.
+* Path-pin sibling `../vello-d` until registry ships `~>0.1.4`.

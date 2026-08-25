@@ -17,6 +17,8 @@ enum NodeKind : ubyte
     TextField,
     CheckBox,
     Spacer,
+    /// Composited 3D/mesh embed (RGBA blit from a `Wgpu3dViewport` or custom buffer).
+    MeshView,
     Custom,
 }
 
@@ -71,6 +73,11 @@ struct Node
     float scrollY = 0;
     /// Clip children to the node's box when painting (ScrollView defaults on).
     bool clipContent;
+
+    /// MeshView: RGBA8 buffer composited via ImageBlit (may be null / empty).
+    const(ubyte)[] meshPixels;
+    uint meshSrcW;
+    uint meshSrcH;
 
     /// Layout output (computed).
     float x, y, w, h;

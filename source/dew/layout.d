@@ -65,6 +65,8 @@ private float measureIntrinsicHeight(ref NodeStore store, NodeId id, float width
         return n.fontSize * (n.bold ? 1.4f : 1.25f) + n.padding * 2;
     case NodeKind.Spacer:
         return 0;
+    case NodeKind.MeshView:
+        return 120;
     case NodeKind.Custom:
         return n.fontSize + n.padding * 2;
     case NodeKind.VStack:
@@ -240,6 +242,8 @@ private float measureMainAuto(ref Node ch, Axis axis) @safe @nogc nothrow
     }
     if (ch.kind == NodeKind.Spacer)
         return 0;
+    if (ch.kind == NodeKind.MeshView)
+        return axis == Axis.Horizontal ? 160 : 120;
     return 0;
 }
 

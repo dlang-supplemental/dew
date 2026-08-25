@@ -10,26 +10,32 @@ Slogan: *Dew it!*
 . [*x*] **Touch** capture, multi-touch move, and drag-vs-tap (`PointerRouter`)
 . [*x*] **Remove** the legacy `rmgui` DUB package (done — use `dew` only)
 . [*x*] Flesh out **dui** state / rebuild / forms / focus / nav / gestures (see dui roadmap)
+. [*x*] Vello glyphs / paths / clips on GPU backend (needs `vello-d` ≥ 0.1.4)
+. [*x*] Mesh embed scaffolding (`MeshView` + `ImageBlit`; soft triangle until shared device)
+. [*x*] Non-Windows window host (Linux X11 / Wayland via vello-d; macOS still open)
 
 == Engine gaps
 
 === Window host
 
 * [*x*] Packaged GLFW demo attaching `VelloRenderBackend` (`examples/vello-window`)
-* No cross-platform non-Windows HWND path yet (demo matches current vello-d Win32 demos)
+* [*x*] Linux X11 / Wayland attach paths in demo (when GLFW + vello-d succeed)
+* [ ] macOS Metal / Cocoa surface constructor (blocked on vello-d)
 * Gallery remains headless for CI (`DewHeadless`)
 
 === Vello / 2D GPU
 
-* Vello path is still thin: rectangles (+ clip no-ops on GPU backend)
 * [*x*] Software backend honors `ClipPush` / `ClipPop`
-* Missing real glyph runs and vector paths on Vello
-* No shared wgpu device with 3D embeds
+* [*x*] Vello backend: real clip layers, stroke rects, rounded fills, path ops, `drawText` glyphs
+* Fonts: system TTF via `dew.backend.font` (replaceable with `setUiFont`)
+* Path-pin `../vello-d` until registry publishes `~>0.1.4`
 
 === wgpu / 3D
 
-* wgpu 3D is bootstrap / stub
-* Not yet embeddable mesh viewports with UI compositing
+* [*x*] `MeshView` leaf + RGBA `ImageBlit` compositing
+* [*x*] `Wgpu3dViewport` embed buffer + soft triangle placeholder
+* [ ] Shared wgpu device with Vello (needs device export from vello-d)
+* [ ] Real GPU mesh pipeline (vertex buffer + depth) into the embed
 
 === Touch / pointer
 
@@ -55,7 +61,8 @@ Slogan: *Dew it!*
 === Memory / `@nogc`
 
 * Arenas and `@nogc` UI thread are designed
-* Main path still uses GC arrays / strings
+* [*x*] Optional `UiBuilder.arena` + `beginFrame` interns text into the arena
+* Main path still uses GC arrays for the node store / display list itself
 
 === Markup adapters
 
@@ -69,7 +76,8 @@ Slogan: *Dew it!*
 == Ship / hygiene
 
 * [*x*] Legacy **`rmgui`** DUB package **removed** from code.dlang.org — consumers use `dew`
-* Local hive folder may still be named `rmgui` (junction to `dew`) — machine-local only; not a committed concern
+* Local hive folder should be named `dew` (rename from `rmgui`); if Cursor still locks an old `rmgui` directory, close that workspace window and delete it
+* Before a DUB tag: flip dui’s `path="../dew"` to `dew ~>0.1.4` after publishing dew; flip dew’s `path="../vello-d"` to `vello-d ~>0.1.4` after publishing vello-d
 * Org Antora docs hub / public-readme chrome not fully wired (README already links Explore the docs)
 * Binary Tailor one-file pack skipped for now (per-triplet zips instead)
 

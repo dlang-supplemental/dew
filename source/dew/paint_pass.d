@@ -28,12 +28,18 @@ private void paintNode(ref NodeStore store, NodeId id, ref DisplayList list) @sa
     case NodeKind.Spacer:
     case NodeKind.Custom:
         break;
+    case NodeKind.MeshView:
+        if (n.meshPixels.length && n.meshSrcW && n.meshSrcH)
+            list.imageBlit(n.x, n.y, n.w, n.h, n.meshSrcW, n.meshSrcH, n.meshPixels);
+        else
+            list.fillRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(20, 26, 40));
+        break;
     case NodeKind.Text:
         list.textRun(n.x + n.padding, n.y + n.padding + n.fontSize,
             n.fontSize, n.bold, n.text, ColorRgba.rgb(30, 30, 30));
         break;
     case NodeKind.Button:
-        list.fillRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(45, 110, 200));
+        list.fillRoundedRect(n.x, n.y, n.w, n.h, 6, ColorRgba.rgb(45, 110, 200));
         list.strokeRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(30, 80, 160));
         list.textRun(n.x + n.padding + 8, n.y + n.h * 0.5f + n.fontSize * 0.35f,
             n.fontSize, true, n.text, ColorRgba.rgb(255, 255, 255));
@@ -58,11 +64,18 @@ private void paintNode(ref NodeStore store, NodeId id, ref DisplayList list) @sa
         break;
     case NodeKind.CheckBox:
         const box = n.fontSize;
-        list.strokeRect(n.x + n.padding, n.y + (n.h - box) * 0.5f, box, box,
-            ColorRgba.rgb(60, 60, 70));
+        const bx = n.x + n.padding;
+        const by = n.y + (n.h - box) * 0.5f;
+        list.strokeRect(bx, by, box, box, ColorRgba.rgb(60, 60, 70));
         if (n.checked)
-            list.fillRect(n.x + n.padding + 3, n.y + (n.h - box) * 0.5f + 3,
-                box - 6, box - 6, ColorRgba.rgb(45, 110, 200));
+        {
+            // Vector checkmark path (honored by Vello path ops / software approx).
+            list.pathBegin();
+            list.pathMoveTo(bx + box * 0.2f, by + box * 0.55f);
+            list.pathLineTo(bx + box * 0.42f, by + box * 0.75f);
+            list.pathLineTo(bx + box * 0.82f, by + box * 0.28f);
+            list.pathStroke(2, ColorRgba.rgb(45, 110, 200));
+        }
         list.textRun(n.x + n.padding + box + 8, n.y + n.h * 0.5f + n.fontSize * 0.35f,
             n.fontSize, false, n.text, ColorRgba.rgb(30, 30, 30));
         break;

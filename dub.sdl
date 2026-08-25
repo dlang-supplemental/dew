@@ -35,12 +35,13 @@ configuration "headless" {
 	versions "DewHeadless"
 }
 
-# Production / GPU hosts: registry vello-d + bindbc-wgpu (no path pins).
+# Production / GPU hosts: prefer registry after vello-d 0.1.4 is published.
+# Until then, path-pin sibling hive clone (same pattern as dui → dew).
 configuration "gpu" {
 	targetType "library"
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	dependency "vello-d" version="~>0.1.3"
+	dependency "vello-d" path="../vello-d"
 	dependency "bindbc-wgpu" version="~>0.27.0"
 }
