@@ -3,7 +3,7 @@
 Project facts for agents. Workstation/env facts live only in `$CODE_ROOT/MEMORIES.md`.
 
 - DUB package name is `dew`; GitHub repo is `dlang-supplemental/dew`
-- Former name: `rmgui` (DUB package remains for history; new work is `dew`)
+- Former name: `rmgui` (DUB package **removed** from code.dlang.org; use `dew` only)
 - Tagline: **Dew it!** (not “Just Dew it” — avoid Nike slogan parody in product chrome)
 - Pure D typed DSL is canonical; CTFE markup and format adapters lower into it
 - Companion app-kit: `dlang-supplemental/dui` (depends on `dew`)

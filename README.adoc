@@ -41,6 +41,17 @@ endif::[]
 
 Package name on DUB: `dew`. App-kit companion: link:https://github.com/dlang-supplemental/dui[`dui`].
 
+== Migration from `rmgui`
+
+The legacy DUB package **`rmgui` was removed** from https://code.dlang.org/[code.dlang.org]. Use **`dew`** only:
+
+[source,powershell]
+----
+dub add dew
+----
+
+The GitHub repo was renamed to link:https://github.com/dlang-supplemental/dew[`dlang-supplemental/dew`] (old `…/rmgui` URLs redirect). Import module `dew`, not `rmgui`.
+
 == About
 
 `dew` is the retained-mode UI *engine*:
@@ -70,6 +81,8 @@ dub add dew
 dub build -c gpu
 dub test -c headless
 ----
+
+Windowed Vello (GLFW + `VelloRenderBackend`): `examples/vello-window` — needs MSVC `link.exe` and Rust/`cargo` (see that example's README). Headless gallery: `examples/gallery`.
 
 == Quick start
 

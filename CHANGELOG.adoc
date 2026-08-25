@@ -1,5 +1,11 @@
 = changelog
 
+== 2026-08-24 - Windowed Vello demo + rmgui removed
+
+* Added `examples/vello-window` (GLFW + `VelloRenderBackend`).
+* Fixed VStack main-axis sizing for Text/Button (height, not width estimate).
+* Removed legacy DUB package `rmgui` from code.dlang.org — use `dew` only.
+
 == 2026-08-24 - Rename to dew + Dew it!
 
 * Package/module rename `rmgui` → `dew`; tagline **Dew it!**
@@ -9,4 +15,7 @@
 
 * Typed DSL, CTFE markup, adapters, software/Vello/wgpu backends, `tgc`, gallery, CI, installers.
 
-Details: link:changelog-details/2026-08-24 - rename to dew.adoc[2026-08-24 - rename to dew].
+Details:
+
+* link:changelog-details/2026-08-24 - windowed vello and rmgui removal.adoc[2026-08-24 - windowed vello and rmgui removal]
+* link:changelog-details/2026-08-24 - rename to dew.adoc[2026-08-24 - rename to dew]

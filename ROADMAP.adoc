@@ -6,17 +6,18 @@ Slogan: *Dew it!*
 
 == Priority next
 
-. Real **windowed Vello demo** (packaged Win32/GLFW host attaching `VelloRenderBackend`)
+. [*x*] Real **windowed Vello demo** (`examples/vello-window` — GLFW + `VelloRenderBackend`)
 . **Touch** capture, multi-touch move, and gestures
-. **Deprecate** the legacy `rmgui` DUB package
+. [*x*] **Remove** the legacy `rmgui` DUB package (done — use `dew` only)
 . Flesh out **dui** state / rebuild (see dui roadmap)
 
 == Engine gaps
 
 === Window host
 
-* No real window host yet — gallery runs headless
-* No packaged Win32 / GLFW loop that attaches `VelloRenderBackend`
+* [*x*] Packaged GLFW demo attaching `VelloRenderBackend` (`examples/vello-window`)
+* No cross-platform non-Windows HWND path yet (demo matches current vello-d Win32 demos)
+* Gallery remains headless for CI (`DewHeadless`)
 
 === Vello / 2D GPU
 
@@ -36,7 +37,7 @@ Slogan: *Dew it!*
 
 === Layout
 
-* Basic flex only
+* Basic flex only (VStack main-axis text/button sizing fixed)
 * No wrap, grid, intrinsic text measure, or scroll
 
 === Memory / `@nogc`
@@ -55,7 +56,7 @@ Slogan: *Dew it!*
 
 == Ship / hygiene
 
-* Old **`rmgui`** DUB package still exists (deprecate after consumers move to `dew`)
+* [*x*] Legacy **`rmgui`** DUB package **removed** from code.dlang.org — consumers use `dew`
 * Local hive folder may still be named `rmgui` (junction to `dew`) — machine-local only; not a committed concern
 * Org Antora docs hub / public-readme chrome not fully wired (README already links Explore the docs)
 * Binary Tailor one-file pack skipped for now (per-triplet zips instead)
