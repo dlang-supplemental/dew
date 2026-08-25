@@ -9,7 +9,7 @@
 #define MyAppExeName "dew-gallery.exe"
 
 [Setup]
-AppId={{A7C4E2D1-9B3F-4E8A-91D0-dew000001}
+AppId={{A7C4E2D1-9B3F-4E8A-91D0-5E2F8B1C4A03}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
