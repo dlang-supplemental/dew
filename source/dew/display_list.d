@@ -75,4 +75,22 @@ struct DisplayList
         d.color = c;
         cmds ~= d;
     }
+
+    void clipPush(float x, float y, float w, float h) @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.ClipPush;
+        d.x = x;
+        d.y = y;
+        d.w = w;
+        d.h = h;
+        cmds ~= d;
+    }
+
+    void clipPop() @safe nothrow
+    {
+        DrawCmd d;
+        d.op = DrawOp.ClipPop;
+        cmds ~= d;
+    }
 }

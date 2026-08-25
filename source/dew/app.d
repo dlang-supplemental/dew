@@ -20,6 +20,8 @@ struct App
     RenderBackend backend;
     string title = "dew";
     string versionLabel = import("VERSION");
+    /// Captures contacts across frames (multi-touch + drag).
+    PointerRouter pointers;
 
     void setRoot(Widget w) @safe @nogc
     {
@@ -37,7 +39,22 @@ struct App
 
     bool pointer(PointerEvent ev) @safe
     {
-        return dispatchPointer(ui.store, root, ev);
+        return pointers.dispatch(ui.store, root, ev);
+    }
+
+    bool key(KeyEvent ev) @safe
+    {
+        return pointers.dispatchKey(ui.store, root, ev);
+    }
+
+    @property NodeId focused() const @safe @nogc pure nothrow
+    {
+        return pointers.focused;
+    }
+
+    void focus(NodeId id) @safe @nogc nothrow
+    {
+        pointers.focused = id;
     }
 
     void resize(float w, float h) @safe

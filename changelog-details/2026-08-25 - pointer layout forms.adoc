@@ -1,0 +1,5 @@
+= 2026-08-25 - pointer layout forms
+
+Headless-testable engine slice for the roadmap: real pointer capture (not Down-only taps), layout justify/scroll/wrap, and form node primitives so **dui** can grow an app-kit without blocking on GPU glyph work.
+
+Breaking note for hosts: button `onClick` now fires on pointer **Up** within slop (and not after a drag). Send Down+Up, or use dui `DuiApp.tap`.
