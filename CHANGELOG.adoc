@@ -1,5 +1,12 @@
 = changelog
 
+== 2026-08-28 - DPI / content scale
+
+* New `dew.scale`: `ScaleFactor`, logical↔physical helpers, DPI/GLFW probes, `ContentScaleSource`.
+* `App` layouts in logical units; display list scaled on present (`applyContentScale`).
+* `examples/vello-window` syncs GLFW framebuffer + content scale.
+* Version **0.1.5**.
+
 == 2026-08-25 - Vello glyphs, paths, mesh embeds
 
 * GPU backend honors clips, strokes, rounded fills, path ops, and system-font glyph runs (`vello-d` draw_text).
@@ -33,6 +40,7 @@
 
 Details:
 
+* link:changelog-details/2026-08-28 - DPI content scale.adoc[2026-08-28 - DPI content scale]
 * link:changelog-details/2026-08-25 - vello glyphs paths mesh.adoc[2026-08-25 - Vello glyphs paths mesh]
 * link:changelog-details/2026-08-25 - pointer layout forms.adoc[2026-08-25 - pointer layout forms]
 * link:changelog-details/2026-08-24 - windowed vello and rmgui removal.adoc[2026-08-24 - windowed vello and rmgui removal]

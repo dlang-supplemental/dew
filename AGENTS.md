@@ -11,6 +11,7 @@ Project facts for agents. Workstation/env facts live only in `$CODE_ROOT/MEMORIE
 - Default/headless configs set `DewHeadless` so CI does not run the Vello Rust pre-build
 - Pointer: `App.pointers` (`PointerRouter`) captures contacts; button `onClick` fires on **Up**
 - 3D embeds: `MeshView` + `Wgpu3dViewport.embedPixels` composited via `DrawOp.ImageBlit`; shared wgpu device with Vello is still open
+- DPI / content scale: `dew.scale` (`ScaleFactor`, `App.contentScale` / `syncFromFramebuffer`); layout+pointers logical, display list scaled to physical
 - Fonts: `setUiFont` / system default via `dew.backend.font` for Vello `drawText`
 - DUB versions: keep `version` in `dub.sdl` in sync with `VERSION` / `DEW_VERSION` / tag `vX.Y.Z`
 - Registry metadata in `assets/`; categories: `library.gui`, `library.graphics`, `library.nogc`

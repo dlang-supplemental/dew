@@ -54,6 +54,12 @@ else version (linux)
 else
     enum bool dewVelloWindowHost = false;
 
+
+extern (C) void glfwContentScaleThunk(void* win, float* sx, float* sy) nothrow @nogc
+{
+    glfwGetWindowContentScale(cast(GLFWwindow*) win, sx, sy);
+}
+
 static if (dewVelloWindowHost)
 void runWindowed()
 {
@@ -120,7 +126,14 @@ void runWindowed()
 
     rebuild();
     app.backend = gpu;
-    app.resize(winW, winH);
+
+    // Logical layout + content scale (GLFW); framebuffer is physical pixels.
+    {
+        int fbW, fbH;
+        glfwGetFramebufferSize(window, &fbW, &fbH);
+        auto scale = contentScaleFromGlfw(cast(void*) window, cast(GlfwContentScaleFn) &glfwContentScaleThunk);
+        app.syncFromFramebuffer(fbW, fbH, scale);
+    }
     app.frame();
 
     bool mouseWasDown;
@@ -130,10 +143,16 @@ void runWindowed()
 
         int fbW, fbH;
         glfwGetFramebufferSize(window, &fbW, &fbH);
+        float sx, sy;
+        glfwGetWindowContentScale(window, &sx, &sy);
+        auto scale = ScaleFactor(sx, sy);
         if (fbW > 0 && fbH > 0
-            && (fbW != cast(int) app.width || fbH != cast(int) app.height))
-            app.resize(fbW, fbH);
+            && (fbW != cast(int) app.physicalWidth
+                || fbH != cast(int) app.physicalHeight
+                || !approxEqualScale(app.contentScale, scale)))
+            app.syncFromFramebuffer(fbW, fbH, scale);
 
+        // Cursor pos is in logical (screen) coordinates — same space as layout.
         double mx, my;
         glfwGetCursorPos(window, &mx, &my);
         const down = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
@@ -169,6 +188,13 @@ void runWindowed()
         mesh.renderEmbed();
         app.frame();
     }
+}
+
+
+bool approxEqualScale(ScaleFactor a, ScaleFactor b, float eps = 1e-3f) @safe @nogc pure nothrow
+{
+    import std.math : abs;
+    return abs(a.x - b.x) <= eps && abs(a.y - b.y) <= eps;
 }
 
 static if (dewVelloWindowHost)

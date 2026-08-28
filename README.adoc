@@ -111,6 +111,18 @@ void main()
 }
 ----
 
+
+== DPI / content scale
+
+Whole-UI DPI scaling is a **normal** part of a Vello-based toolkit (the scene is in physical pixels; UI speaks logical units) and a **reusable** dew core concern — not ad-hoc per app.
+
+* Module: `dew.scale` — `ScaleFactor`, `logicalToPhysical` / `physicalToLogical`, `contentScaleFromDpi`, `contentScaleFromGlfw`, `ContentScaleSource` (+ stub / fixed / GLFW probes).
+* `App.contentScale` defaults to **1×**. Layout and pointer hit-testing stay in **logical** units; `frame()` scales the display list before `present`.
+* Hosts sync with `app.syncFromFramebuffer(fbW, fbH, scale)` (see `examples/vello-window`) or set `app.scaleSource`.
+* Windows: Per-Monitor V2 / `WM_DPICHANGED` → feed DPI via `contentScaleFromDpi(GetDpiForWindow(hwnd))`. GLFW: `glfwGetWindowContentScale`.
+
+Apps using dew get logical layout + scale for free once the window host supplies the factor.
+
 == Roadmap
 
 Unfinished work and near-term priorities: link:ROADMAP.adoc[ROADMAP.adoc].

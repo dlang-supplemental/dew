@@ -2,6 +2,10 @@
 module dew.units;
 
 /// Length with unit tag.
+///
+/// `Kind.Px` is a **logical** pixel (DIP). Physical framebuffer pixels are
+/// obtained via `dew.scale.ScaleFactor` on the paint path — do not bake DPI
+/// into widget declarations.
 struct Length
 {
     float value = 0;

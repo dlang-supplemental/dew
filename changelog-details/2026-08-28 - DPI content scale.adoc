@@ -1,0 +1,15 @@
+= 2026-08-28 - DPI / content scale
+
+Whole-UI content scale landed in dew core so hosts (open-shell chrome, terminal overlays, host widgets) share one logical↔physical path.
+
+== What changed
+
+* `dew.scale` — reusable DPI / content-scale API (`ScaleFactor`, conversions, GLFW/DPI probes, stub sources).
+* Layout remains in logical (DIP) units; paint scales centrally via `DisplayList.applyContentScale`.
+* `App.syncFromFramebuffer` + optional `ContentScaleSource` for live monitor / `WM_DPICHANGED` updates.
+* Unit tests cover 100% vs 150% physical sizes without rewriting widgets.
+
+== Gaps
+
+* Font atlas / hinting at fractional DPI still follows the paint fontSize scale only (no separate glyph DPI pipeline yet).
+* Non-uniform x/y scale uses axis average for strokes, radii, and fonts.

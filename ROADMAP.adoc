@@ -47,6 +47,7 @@ Slogan: *Dew it!*
 
 === Layout
 
+* [*x*] Whole-UI **DPI / content scale** (`dew.scale` + `App.contentScale`; logical layout → scaled display list)
 * [*x*] `JustifyContent` honored when children do not flex-grow
 * [*x*] `ScrollView` + scroll offsets + clip
 * [*x*] Injectable text measure (`setTextMeasure`)

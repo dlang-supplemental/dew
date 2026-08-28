@@ -1,6 +1,8 @@
 /// Flat draw command buffer emitted after layout.
 module dew.display_list;
 
+import dew.scale;
+
 enum DrawOp : ubyte
 {
     FillRect,
@@ -195,5 +197,57 @@ struct DisplayList
         d.srcH = srcH;
         d.pixels = pixels;
         cmds ~= d;
+    }
+    /// Multiply geometry into physical pixels using `scale` (no-op when identity).
+    /// Layout/hit-test stay logical; call this after `paintTree` before `present`.
+    void applyContentScale(ScaleFactor scale) @safe @nogc nothrow
+    {
+        if (scale.isIdentity)
+            return;
+        const sx = scale.x;
+        const sy = scale.y;
+        // Uniform-ish stroke / radius / font: average axes (non-uniform DPI is rare).
+        const sAvg = (sx + sy) * 0.5f;
+        foreach (ref d; cmds)
+        {
+            final switch (d.op)
+            {
+            case DrawOp.FillRect:
+            case DrawOp.StrokeRect:
+            case DrawOp.FillRoundedRect:
+            case DrawOp.ClipPush:
+            case DrawOp.ImageBlit:
+                d.x *= sx;
+                d.y *= sy;
+                d.w *= sx;
+                d.h *= sy;
+                if (d.op == DrawOp.StrokeRect || d.op == DrawOp.FillRoundedRect)
+                    d.param *= sAvg;
+                break;
+            case DrawOp.FillCircle:
+                d.x *= sx;
+                d.y *= sy;
+                d.param *= sAvg;
+                break;
+            case DrawOp.TextRun:
+                d.x *= sx;
+                d.y *= sy;
+                d.fontSize *= sAvg;
+                break;
+            case DrawOp.PathMoveTo:
+            case DrawOp.PathLineTo:
+                d.x *= sx;
+                d.y *= sy;
+                break;
+            case DrawOp.PathStroke:
+                d.param *= sAvg;
+                break;
+            case DrawOp.ClipPop:
+            case DrawOp.PathBegin:
+            case DrawOp.PathClose:
+            case DrawOp.PathFill:
+                break;
+            }
+        }
     }
 }

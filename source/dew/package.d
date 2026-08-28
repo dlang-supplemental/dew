@@ -9,6 +9,7 @@
 module dew;
 
 public import dew.units;
+public import dew.scale;
 public import dew.arena;
 public import dew.node;
 public import dew.input;
