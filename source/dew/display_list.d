@@ -29,6 +29,11 @@ struct ColorRgba
     {
         return ColorRgba(r, g, b, 255);
     }
+
+    static ColorRgba rgba(ubyte r, ubyte g, ubyte b, ubyte a) @safe @nogc pure nothrow
+    {
+        return ColorRgba(r, g, b, a);
+    }
 }
 
 struct DrawCmd

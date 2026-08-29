@@ -27,6 +27,21 @@ private void paintNode(ref NodeStore store, NodeId id, ref DisplayList list) @sa
     case NodeKind.ScrollView:
     case NodeKind.Spacer:
     case NodeKind.Custom:
+        if (n.fillBackground)
+            list.fillRect(n.x, n.y, n.w, n.h, n.bgColor);
+        break;
+    case NodeKind.Canvas:
+        list.fillRect(n.x, n.y, n.w, n.h,
+            n.fillBackground ? n.bgColor : ColorRgba.rgb(252, 250, 240));
+        list.strokeRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(180, 170, 140));
+        if (n.showGrid)
+        {
+            enum float step = 24;
+            for (float gx = n.x + step; gx < n.x + n.w; gx += step)
+                list.fillRect(gx, n.y, 1, n.h, ColorRgba.rgba(200, 190, 160, 80));
+            for (float gy = n.y + step; gy < n.y + n.h; gy += step)
+                list.fillRect(n.x, gy, n.w, 1, ColorRgba.rgba(200, 190, 160, 80));
+        }
         break;
     case NodeKind.MeshView:
         if (n.meshPixels.length && n.meshSrcW && n.meshSrcH)
@@ -45,21 +60,42 @@ private void paintNode(ref NodeStore store, NodeId id, ref DisplayList list) @sa
             n.fontSize, true, n.text, ColorRgba.rgb(255, 255, 255));
         break;
     case NodeKind.TextField:
-        list.fillRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(250, 250, 252));
+        list.fillRect(n.x, n.y, n.w, n.h,
+            n.fillBackground ? n.bgColor : ColorRgba.rgb(250, 250, 252));
         list.strokeRect(n.x, n.y, n.w, n.h, ColorRgba.rgb(120, 120, 130));
         auto shown = n.text.length ? n.text : n.placeholder;
         auto col = n.text.length ? ColorRgba.rgb(20, 20, 24) : ColorRgba.rgb(140, 140, 150);
         if (n.password && n.text.length)
         {
-            // Paint a bullets bar instead of leaking glyphs.
             list.fillRect(n.x + n.padding + 6, n.y + n.h * 0.45f,
                 min(n.w - n.padding * 2 - 12, n.text.length * n.fontSize * 0.4f),
                 n.fontSize * 0.2f, col);
         }
+        else if (n.multiline)
+        {
+            float ly = n.y + n.padding + n.fontSize;
+            size_t start = 0;
+            foreach (i, ch; shown)
+            {
+                if (ch == '\n' || i + 1 == shown.length)
+                {
+                    const end = (ch == '\n') ? i : i + 1;
+                    auto line = shown[start .. end];
+                    if (line.length && line[$ - 1] == '\r')
+                        line = line[0 .. $ - 1];
+                    list.textRun(n.x + n.padding + 6, ly, n.fontSize, n.bold, line, col);
+                    ly += n.fontSize * 1.35f;
+                    start = i + 1;
+                }
+            }
+            if (!shown.length)
+                list.textRun(n.x + n.padding + 6, n.y + n.padding + n.fontSize,
+                    n.fontSize, false, n.placeholder, ColorRgba.rgb(140, 140, 150));
+        }
         else
         {
             list.textRun(n.x + n.padding + 6, n.y + n.h * 0.5f + n.fontSize * 0.35f,
-                n.fontSize, false, shown, col);
+                n.fontSize, n.bold, shown, col);
         }
         break;
     case NodeKind.CheckBox:
@@ -69,7 +105,6 @@ private void paintNode(ref NodeStore store, NodeId id, ref DisplayList list) @sa
         list.strokeRect(bx, by, box, box, ColorRgba.rgb(60, 60, 70));
         if (n.checked)
         {
-            // Vector checkmark path (honored by Vello path ops / software approx).
             list.pathBegin();
             list.pathMoveTo(bx + box * 0.2f, by + box * 0.55f);
             list.pathLineTo(bx + box * 0.42f, by + box * 0.75f);

@@ -3,8 +3,10 @@ module dew.node;
 
 import dew.units;
 import dew.input;
+import dew.display_list : ColorRgba;
 
 public import dew.input : ClickHandler, PointerHandler, KeyHandler, TouchCapability, PointerEvent;
+public import dew.display_list : ColorRgba;
 
 enum NodeKind : ubyte
 {
@@ -19,6 +21,8 @@ enum NodeKind : ubyte
     Spacer,
     /// Composited 3D/mesh embed (RGBA blit from a `Wgpu3dViewport` or custom buffer).
     MeshView,
+    /// Freeform surface for ink / diagram hosts (fills `bgColor`, optional grid).
+    Canvas,
     Custom,
 }
 
@@ -78,6 +82,14 @@ struct Node
     const(ubyte)[] meshPixels;
     uint meshSrcW;
     uint meshSrcH;
+
+    /// Optional solid fill behind the node (Canvas / sticky note surfaces).
+    bool fillBackground;
+    ColorRgba bgColor = ColorRgba(255, 255, 255, 255);
+    /// TextField: wrap/`\n` aware editing surface.
+    bool multiline;
+    /// Canvas: draw a light rule grid under children.
+    bool showGrid;
 
     /// Layout output (computed).
     float x, y, w, h;

@@ -49,7 +49,8 @@ private void layoutNode(ref NodeStore store, NodeId id, float x, float y, float 
     n.dirty = false;
 
     if (n.kind == NodeKind.VStack || n.kind == NodeKind.HStack
-        || n.kind == NodeKind.Container || n.kind == NodeKind.ScrollView)
+        || n.kind == NodeKind.Container || n.kind == NodeKind.ScrollView
+        || n.kind == NodeKind.Canvas)
         layoutChildren(store, id);
 }
 
@@ -60,13 +61,26 @@ private float measureIntrinsicHeight(ref NodeStore store, NodeId id, float width
     {
     case NodeKind.Text:
     case NodeKind.Button:
-    case NodeKind.TextField:
     case NodeKind.CheckBox:
+        return n.fontSize * (n.bold ? 1.4f : 1.25f) + n.padding * 2;
+    case NodeKind.TextField:
+        if (n.multiline)
+        {
+            size_t lines = 1;
+            foreach (ch; n.text)
+                if (ch == '\n')
+                    lines++;
+            if (!n.text.length)
+                lines = 3;
+            return lines * n.fontSize * 1.35f + n.padding * 2;
+        }
         return n.fontSize * (n.bold ? 1.4f : 1.25f) + n.padding * 2;
     case NodeKind.Spacer:
         return 0;
     case NodeKind.MeshView:
         return 120;
+    case NodeKind.Canvas:
+        return 240;
     case NodeKind.Custom:
         return n.fontSize + n.padding * 2;
     case NodeKind.VStack:
@@ -238,12 +252,24 @@ private float measureMainAuto(ref Node ch, Axis axis) @safe @nogc nothrow
             return textMeasure(label, ch.fontSize, ch.bold) + ch.padding * 2
                 + (ch.kind == NodeKind.Button || ch.kind == NodeKind.TextField ? 16 : 0);
         }
+        if (ch.kind == NodeKind.TextField && ch.multiline)
+        {
+            size_t lines = 1;
+            foreach (c; ch.text)
+                if (c == '\n')
+                    lines++;
+            if (!ch.text.length)
+                lines = 3;
+            return lines * ch.fontSize * 1.35f + ch.padding * 2;
+        }
         return ch.fontSize * (ch.bold ? 1.4f : 1.25f) + ch.padding * 2;
     }
     if (ch.kind == NodeKind.Spacer)
         return 0;
     if (ch.kind == NodeKind.MeshView)
         return axis == Axis.Horizontal ? 160 : 120;
+    if (ch.kind == NodeKind.Canvas)
+        return axis == Axis.Horizontal ? 320 : 240;
     return 0;
 }
 

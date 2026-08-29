@@ -3,7 +3,7 @@ description "Modern retained-mode GUI for D: typed DSL, CTFE markup, flex layout
 authors "amdphreak"
 copyright "Copyright © 2026, dlang-supplemental contributors"
 license "BSL-1.0"
-version "0.1.5"
+version "0.1.6"
 # Keep in sync with VERSION / DEW_VERSION / git tag vX.Y.Z.
 
 targetType "library"

@@ -1,5 +1,11 @@
 = changelog
 
+== 2026-08-29 - Canvas, sticky backgrounds, multiline fields
+
+* `NodeKind.Canvas` with optional rule grid; containers can `fillBackground` / `background(ColorRgba)`.
+* `TextField.multiline` paints and measures `\n` lines; DSL `Canvas`, `multiline`, `background`, `showGrid`.
+* Version **0.1.6**.
+
 == 2026-08-28 - DPI / content scale
 
 * New `dew.scale`: `ScaleFactor`, logical↔physical helpers, DPI/GLFW probes, `ContentScaleSource`.

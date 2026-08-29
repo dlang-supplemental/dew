@@ -9,6 +9,7 @@ import dew.node;
 import dew.units;
 import dew.input;
 import dew.arena;
+import dew.display_list : ColorRgba;
 
 /// Builder wrapping a `NodeId` with method chaining.
 struct Widget
@@ -174,6 +175,25 @@ struct Widget
         return this;
     }
 
+    Widget multiline(bool enable = true) @safe @nogc
+    {
+        n.multiline = enable;
+        return this;
+    }
+
+    Widget background(ColorRgba c) @safe @nogc
+    {
+        n.bgColor = c;
+        n.fillBackground = true;
+        return this;
+    }
+
+    Widget showGrid(bool enable = true) @safe @nogc
+    {
+        n.showGrid = enable;
+        return this;
+    }
+
     Widget child(Widget c) @safe
     {
         store.appendChild(id, c.id);
@@ -262,6 +282,15 @@ struct UiBuilder
         return w;
     }
 
+    Widget canvas(Widget[] kids...) return @safe
+    {
+        auto w = make(NodeKind.Canvas);
+        w.clipContent(true);
+        foreach (c; kids)
+            store.appendChild(w.id, c.id);
+        return w;
+    }
+
     Widget text(const(char)[] s) return @safe nothrow
     {
         return make(NodeKind.Text, s);
@@ -334,6 +363,11 @@ Widget Container(Widget[] kids...) @safe
 Widget ScrollView(Widget[] kids...) @safe
 {
     return ui.scrollView(kids);
+}
+
+Widget Canvas(Widget[] kids...) @safe
+{
+    return ui.canvas(kids);
 }
 
 Widget Text(const(char)[] s) @safe

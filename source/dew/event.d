@@ -279,6 +279,7 @@ NodeId hitInteractive(ref NodeStore store, NodeId id, float x, float y, PointerE
         || n.kind == NodeKind.Button
         || n.kind == NodeKind.TextField
         || n.kind == NodeKind.CheckBox
+        || n.kind == NodeKind.Canvas
         || n.focusable;
     return interactive ? id : NodeId.init;
 }

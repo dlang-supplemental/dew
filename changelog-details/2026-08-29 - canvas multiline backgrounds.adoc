@@ -1,0 +1,12 @@
+= 2026-08-29 - Canvas, sticky backgrounds, multiline fields
+
+== Summary
+
+Sticky-note and diagram hosts needed a filled surface and multi-line editing without leaving the retained tree. Canvas is a clip-friendly leaf/container; multiline TextField measures line count for layout.
+
+== Details
+
+* `Node.fillBackground` + `bgColor` paint under stacks/containers/fields.
+* `NodeKind.Canvas` fills, strokes, optional light grid; children layout as a vertical stack by default.
+* `TextField.multiline` splits paint on `\n` (and strips trailing `\r`).
+* DSL: `Canvas(...)`, `.multiline()`, `.background(c)`, `.showGrid()`.
