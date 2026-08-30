@@ -45,4 +45,13 @@ configuration "gpu" {
 	stringImportPaths "."
 	dependency "vello-d" path="../vello-d"
 	dependency "bindbc-wgpu" version="~>0.27.0"
+	# Re-export bridge link flags so GPU hosts (executables) pick up vello_bridge.
+	platform "windows" {
+		lflags "/LIBPATH:$PACKAGE_DIR/../vello-d/vello_bridge/target/release"
+		libs "vello_bridge" "advapi32" "userenv" "ws2_32" "bcrypt" "ntdll" "kernel32" "shell32" "ole32"
+	}
+	platform "posix" {
+		lflags "-L$PACKAGE_DIR/../vello-d/vello_bridge/target/release"
+		libs "vello_bridge" "pthread" "dl" "m"
+	}
 }
