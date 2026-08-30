@@ -20,6 +20,7 @@ version (DewHeadless)
         void attach(void*, void*, uint, uint, int = 0) @safe {}
         void attachX11(void*, ulong, int, uint, uint, int = 0) @safe {}
         void attachWayland(void*, void*, uint, uint, int = 0) @safe {}
+        @property bool attached() const @safe @nogc pure nothrow { return false; }
     }
     alias VelloBackend = VelloRenderBackend;
 }
