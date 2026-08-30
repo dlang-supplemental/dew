@@ -52,7 +52,7 @@ final class Wgpu3dViewport : RenderBackend
             height = h;
             // Dynamic load; fail soft if native lib absent (CI without GPU).
             auto support = loadWGPU();
-            if (support != WGPUSupport.wgpu && support != WGPUSupport.wgpuNative)
+            if (support != WGPUSupport.wgpu25)
             {
                 ready = false;
                 ensureEmbedBuffer();
