@@ -1,5 +1,14 @@
 = changelog
 
+== 2026-09-09 - Registry-safe headless resolution
+
+* Make the inactive GPU configuration depend on registry `vello-d` **0.1.4** instead of a sibling path.
+* Prepare registry-only headless/software resolution after vello-d **0.1.4** is released, while retaining tgc **0.1.1**.
+
+Details:
+
+* link:changelog-details/2026-09-09 - registry-safe headless resolution.adoc[2026-09-09 - registry-safe headless resolution]
+
 == 2026-08-29 - Canvas, sticky backgrounds, multiline fields
 
 * `NodeKind.Canvas` with optional rule grid; containers can `fillBackground` / `background(ColorRgba)`.

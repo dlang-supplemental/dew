@@ -3,7 +3,7 @@ description "Modern retained-mode GUI for D: typed DSL, CTFE markup, flex layout
 authors "amdphreak"
 copyright "Copyright © 2026, dlang-supplemental contributors"
 license "BSL-1.0"
-version "0.1.6"
+version "0.1.7"
 # Keep in sync with VERSION / DEW_VERSION / git tag vX.Y.Z.
 
 targetType "library"
@@ -35,15 +35,14 @@ configuration "headless" {
 	versions "DewHeadless"
 }
 
-# GPU hosts need a sibling checkout of vello-d (CI does this; local hive already has it).
-# Flip to registry `~>0.1.4` after that version is published — path pins are validated
-# by DUB for every configuration, so CI must keep the sibling present.
+# GPU hosts require vello-d 0.1.4 or newer. Release vello-d 0.1.4 before this
+# Dew manifest so consumers can resolve every configuration from the registry.
 configuration "gpu" {
 	targetType "library"
 	importPaths "source"
 	sourcePaths "source"
 	stringImportPaths "."
-	dependency "vello-d" path="../vello-d"
+	dependency "vello-d" version="~>0.1.4"
 	dependency "bindbc-wgpu" version="~>0.27.0"
 	# Re-export bridge link flags so GPU hosts (executables) pick up vello_bridge.
 	platform "windows" {

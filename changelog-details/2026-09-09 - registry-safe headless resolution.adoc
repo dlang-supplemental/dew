@@ -1,0 +1,8 @@
+= Registry-safe headless resolution
+
+The Dew 0.1.6 registry archive retained a sibling-path `vello-d` dependency in its GPU configuration.
+DUB validates path dependencies in inactive configurations, so clean headless and software consumers could not resolve the package without an unrelated sibling checkout.
+
+The GPU configuration now uses the registry constraint `vello-d ~>0.1.4`.
+After vello-d 0.1.4 is released, headless consumers can resolve without a sibling checkout while GPU consumers retain the compatible dependency.
+The package continues to depend on tgc 0.1.1.
