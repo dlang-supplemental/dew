@@ -48,3 +48,6 @@ jobs:
       - name: Build gallery
         run: dub build --compiler=ldc2 --build=release
         working-directory: dew/examples/gallery
+      - name: tgc UI stress harness
+        run: dub run --compiler=ldc2 --build=release
+        working-directory: dew/examples/tgc-stress
