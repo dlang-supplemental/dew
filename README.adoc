@@ -84,7 +84,7 @@ dub build -c gpu
 dub test -c headless
 ----
 
-Windowed Vello (GLFW + `VelloRenderBackend`): `examples/vello-window` — needs MSVC `link.exe` and Rust/`cargo` (see that example's README). Headless gallery: `examples/gallery`.
+Windowed Vello (GLFW + `VelloRenderBackend`): `examples/vello-window` — needs MSVC `link.exe` and Rust/`cargo` (see that example's README). Headless gallery: `examples/gallery`. `tgc` UI responsiveness stress: `examples/tgc-stress` (see its README for PASS/FAIL threshold).
 
 == Quick start
 

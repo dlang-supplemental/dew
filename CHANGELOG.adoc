@@ -1,5 +1,10 @@
 = changelog
 
+== 2026-09-16 - tgc UI stress harness
+
+* New headless example `examples/tgc-stress`: measures max `App.frame()` stall while a worker thread allocates under `tgc` (`Tgc_default` / `--DRT-gcopt=gc:tgc`).
+* CI runs the harness after the gallery build; documents a 48 ms max-frame PASS threshold.
+
 == 2026-09-09 - Registry-safe headless resolution
 
 * Make the inactive GPU configuration depend on registry `vello-d` **0.1.4** instead of a sibling path.

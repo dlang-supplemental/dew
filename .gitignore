@@ -63,4 +63,7 @@ MEMORIES.md
 !.gitignore
 # Re-ignore build outputs under allowed trees
 examples/**/*.exe
+examples/**/dew-gallery
+examples/**/dew-tgc-stress
+examples/**/dew-vello-window
 examples/**/dub.selections.json
