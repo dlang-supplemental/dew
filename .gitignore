@@ -64,3 +64,5 @@ MEMORIES.md
 # Re-ignore build outputs under allowed trees
 examples/**/*.exe
 examples/**/dub.selections.json
+!/.editorconfig
+!/.gitattributes
