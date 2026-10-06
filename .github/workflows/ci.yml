@@ -28,17 +28,17 @@ jobs:
         working-directory: dew
     steps:
       - name: Checkout dew
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: dew
       # DUB validates path deps in every configuration; gpu pins ../vello-d.
       - name: Checkout vello-d sibling
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: dlang-supplemental/vello-d
           ref: cursor/draw-text-0.1.4
           path: vello-d
-      - uses: dlang-community/setup-dlang@v1
+      - uses: dlang-community/setup-dlang@v2
         with:
           compiler: ldc-latest
       - name: Test headless

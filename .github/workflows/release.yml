@@ -35,8 +35,8 @@ jobs:
             artifact: dew-gallery
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dlang-community/setup-dlang@v1
+      - uses: actions/checkout@v7
+      - uses: dlang-community/setup-dlang@v2
         with:
           compiler: ldc-latest
       - name: Stamp version
@@ -72,7 +72,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path dist\windows-x64 | Out-Null
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\windows\dew-gallery.iss
           # Output already lands in dist/windows-x64/ (see .iss OutputDir)
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: app-${{ matrix.triplet }}
           path: dist/${{ matrix.triplet }}/**
@@ -82,8 +82,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           path: slices
       - name: Zip slices
@@ -97,7 +97,7 @@ jobs:
           # Prefer installer from windows-x64 staging if present inside the zip tree
           find slices -name 'dew-gallery-setup.exe' -exec cp {} release/ \;
           ls -la release
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: release/*
           generate_release_notes: true
