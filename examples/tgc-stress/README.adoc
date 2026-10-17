@@ -1,0 +1,50 @@
+= tgc UI responsiveness stress (`dew-tgc-stress`)
+
+Headless harness that drives a minimal `dew` `App.frame()` loop on the main thread while a sibling thread allocates aggressively and triggers `GC.collect()` on its own heap (`tgc`). The goal is to show that UI ticks stay within a bounded stall budget instead of suffering global stop-the-world pauses.
+
+== Requirements
+
+* LDC or DMD with pluggable GC + `registerGCFactory` (same era as upstream `tgc` integration; CI uses `ldc-latest`).
+* `import tgc.gcobj;` and either:
+** `versions "Tgc_default"` in this example's `dub.sdl` (default), or
+** run with `--DRT-gcopt=gc:tgc`.
+
+== Run
+
+From the repo root:
+
+[source,bash]
+----
+dub run --root examples/tgc-stress --compiler=ldc2 --build=release
+----
+
+Or:
+
+[source,bash]
+----
+cd examples/tgc-stress
+dub run --compiler=ldc2 --build=release
+----
+
+Optional override (must still select `tgc`):
+
+[source,bash]
+----
+./dew-tgc-stress --DRT-gcopt=gc:tgc
+----
+
+== Pass / fail
+
+The program prints frame statistics and a single result line:
+
+* `TGC_STRESS: PASS` — maximum frame/tick latency stayed at or below the documented threshold while the worker was active.
+* `TGC_STRESS: FAIL` — threshold exceeded (often indicates default global GC or an overloaded host).
+* `TGC_STRESS: SKIP` — `tgc` could not be selected on this compiler/runtime (harness still built; fix the toolchain).
+
+Threshold (see `MaxFrameStallMs` in link:source/app.d[`source/app.d`]): **48 ms** max stall per `App.frame()` during the stress window (default **400** frames, worker allocating + collecting throughout).
+
+Worker isolation: the worker only retains GC pointers on its own thread (same pattern as `tgc` smoke tests). Coordination uses `shared` atomics only — no cross-thread mutable GC graphs.
+
+== CI
+
+`.github/workflows/ci.yml` builds and runs this example after the headless gallery on each matrix row.
